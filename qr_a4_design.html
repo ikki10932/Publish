@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>名古屋めし解説 - QRコード印刷用</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .page {
+            width: 210mm;
+            height: 297mm;
+            background-color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            box-sizing: border-box;
+            padding: 15mm;
+            position: relative;
+        }
+        
+        /* フレーム（レイアウト用・枠線なし） */
+        .frame {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-top: -20mm; /* 全体を少し上にシフト */
+        }
+
+        .title {
+            font-family: 'Yu Mincho', YuMincho, 'Hiragino Mincho ProN', 'Shippori Mincho', serif;
+            font-size: 38pt;
+            font-weight: normal;
+            color: #2c2c2c;
+            margin: 0;
+            letter-spacing: 0.25em;
+            text-indent: 0.25em; /* 文字間隔の調整用 */
+        }
+        
+        .subtitle {
+            font-family: 'Optima', 'Didot', 'Bodoni MT', 'Times New Roman', serif;
+            font-size: 13pt;
+            color: #666666;
+            letter-spacing: 0.4em;
+            margin-top: 6mm;
+            margin-bottom: 25mm;
+            text-indent: 0.4em;
+        }
+
+        .qr-wrapper {
+            position: relative;
+            padding: 8mm;
+            margin-bottom: 20mm;
+        }
+        
+        /* QRコードの四隅に細いアクセントライン */
+        .qr-wrapper::before, .qr-wrapper::after {
+            content: '';
+            position: absolute;
+            width: 15mm;
+            height: 15mm;
+            border: 1px solid #2c2c2c;
+        }
+        .qr-wrapper::before {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+        }
+        .qr-wrapper::after {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+        }
+        .qr-wrapper-inner::before, .qr-wrapper-inner::after {
+            content: '';
+            position: absolute;
+            width: 15mm;
+            height: 15mm;
+            border: 1px solid #2c2c2c;
+        }
+        .qr-wrapper-inner::before {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+        }
+        .qr-wrapper-inner::after {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+        }
+
+        .qr-image {
+            width: 130mm;
+            height: 130mm;
+            display: block;
+        }
+
+        .instruction {
+            font-family: 'Yu Mincho', YuMincho, 'Hiragino Mincho ProN', serif;
+            font-size: 13pt;
+            color: #2c2c2c;
+            line-height: 2;
+            margin: 0 0 10mm 0;
+            letter-spacing: 0.15em;
+        }
+
+        .url {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 10pt;
+            color: #888888;
+            letter-spacing: 0.05em;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+            }
+            .page {
+                box-shadow: none;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="frame">
+            <div class="content">
+                <h1 class="title">名古屋めし解説</h1>
+                <div class="subtitle">NAGOYA MESHI GUIDE</div>
+                
+                <div class="qr-wrapper">
+                    <div class="qr-wrapper-inner"></div>
+                    <img class="qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=https://ikki10932.github.io/Publish/nagoyameshi.html&margin=0" alt="QR Code">
+                </div>
+                
+                
+                
+                <div class="url">https://ikki10932.github.io/Publish/nagoyameshi.html</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
