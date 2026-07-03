@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>名古屋めし徹底ガイド</title>
+<title>目次 | Publish</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -24,7 +24,6 @@
     --sans: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
   body {
     font-family: var(--sans);
     background: var(--paper);
@@ -36,16 +35,12 @@
     font-feature-settings: "palt";
   }
 
-  /* ================= ヒーロー ================= */
   header {
-    background:
-      linear-gradient(rgba(34,26,21,0.0), rgba(34,26,21,0.0)),
-      radial-gradient(ellipse 120% 80% at 50% -20%, #8F3A28 0%, var(--lacquer-deep) 60%, #3E140C 100%);
+    background: radial-gradient(ellipse 120% 80% at 50% -20%, #8F3A28 0%, var(--lacquer-deep) 60%, #3E140C 100%);
     color: var(--paper);
-    padding: 64px 24px 56px;
+    padding: 56px 24px 48px;
     text-align: center;
     position: relative;
-    overflow: hidden;
   }
   header::after {
     content: "";
@@ -54,881 +49,90 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
   }
-  .hero-kanji {
-    position: absolute;
-    right: -24px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: var(--serif);
-    font-weight: 800;
-    font-size: 11rem;
-    line-height: 1;
-    color: rgba(255,255,255,0.045);
-    pointer-events: none;
-    user-select: none;
-    writing-mode: vertical-rl;
-    letter-spacing: -0.08em;
-  }
-  .hero-eyebrow {
-    font-size: 0.68rem;
-    letter-spacing: 0.55em;
-    text-indent: 0.55em;
-    color: var(--gold-pale);
-    margin-bottom: 22px;
-    font-weight: 500;
-  }
   header h1 {
     font-family: var(--serif);
+    font-size: clamp(28px, 6vw, 40px);
     font-weight: 800;
-    font-size: 2.15rem;
-    letter-spacing: 0.14em;
-    line-height: 1.5;
-    margin-bottom: 20px;
-  }
-  .hero-rule {
-    width: 40px; height: 1px;
-    background: var(--gold);
-    margin: 0 auto 24px;
-  }
-  header p.intro {
-    font-size: 0.86rem;
-    text-align: left;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 2.2;
-    color: rgba(247,242,232,0.88);
-    position: relative;
-  }
-
-  /* ================= ナビ ================= */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(34,26,21,0.97);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    border-bottom: 1px solid rgba(185,138,47,0.35);
-  }
-  nav::-webkit-scrollbar { display: none; }
-  nav ul {
-    list-style: none;
-    display: flex;
-    width: max-content;
-    margin: 0 auto;
-  }
-  nav a {
-    display: block;
-    color: rgba(247,242,232,0.85);
-    text-decoration: none;
-    font-size: 0.78rem;
-    font-weight: 500;
     letter-spacing: 0.12em;
-    padding: 13px 16px;
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s;
   }
-  nav a:active, nav a:hover { color: var(--gold-pale); border-bottom-color: var(--gold); }
-  nav a i {
-    font-style: normal;
-    font-family: var(--serif);
-    color: var(--gold);
-    margin-right: 6px;
-    font-size: 0.72rem;
-  }
-
-  main { max-width: 640px; margin: 0 auto; padding: 40px 20px 64px; }
-  section { margin-bottom: 64px; scroll-margin-top: 60px; }
-
-  /* ================= 章見出し ================= */
-  .sec-head { margin-bottom: 8px; }
-  .sec-index {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    margin-bottom: 6px;
-  }
-  .sec-index .num {
-    font-family: var(--serif);
-    font-weight: 600;
-    font-size: 2.6rem;
-    line-height: 1;
-    color: var(--lacquer);
-  }
-  .sec-index .en {
-    font-size: 0.62rem;
-    letter-spacing: 0.35em;
-    color: var(--gold);
-    font-weight: 700;
-    text-transform: uppercase;
-    padding-bottom: 6px;
-  }
-  h2 {
-    font-family: var(--serif);
-    font-weight: 700;
-    font-size: 1.42rem;
-    color: var(--ink);
-    line-height: 1.6;
-    letter-spacing: 0.06em;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--ink);
-    position: relative;
-  }
-  h2::after {
-    content: "";
-    position: absolute;
-    left: 0; bottom: -1px;
-    width: 56px; height: 1px;
-    background: var(--gold);
-  }
-  .lead {
-    font-size: 0.86rem;
-    color: var(--sub);
-    margin: 14px 0 26px;
-    line-height: 2;
-  }
-
-  /* ================= カード ================= */
-  .card {
-    background: var(--white);
-    border: 1px solid var(--hairline);
-    padding: 24px 22px 22px;
-    margin-bottom: 20px;
-    position: relative;
-  }
-  .card::before {
-    content: "";
-    position: absolute;
-    top: -1px; left: 22px;
-    width: 34px; height: 3px;
-    background: var(--lacquer);
-  }
-  .card h3 {
-    font-family: var(--serif);
-    font-weight: 700;
-    font-size: 1.18rem;
-    color: var(--ink);
-    letter-spacing: 0.08em;
-    margin-bottom: 4px;
-  }
-  .card .yomi {
-    display: block;
-    font-size: 0.62rem;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
-  .card p { margin-bottom: 12px; font-size: 0.9rem; }
-  .card p:last-child { margin-bottom: 0; }
-
-  /* ================= 定義リスト ================= */
-  .kv { margin: 4px 0; }
-  .kv > div {
-    padding: 10px 0;
-    border-top: 1px dotted var(--hairline);
-    font-size: 0.9rem;
-  }
-  .kv > div:first-child { border-top: none; padding-top: 2px; }
-  .kv .k {
-    font-weight: 700;
-    color: var(--lacquer);
-    font-size: 0.84rem;
-    display: block;
-    line-height: 1.7;
-    margin-bottom: 2px;
-  }
-  .kv .k::before {
-    content: "";
-    display: inline-block;
-    width: 7px; height: 7px;
-    border: 1.5px solid var(--gold);
-    transform: rotate(45deg);
-    margin-right: 8px;
-    vertical-align: 1px;
-  }
-
-  /* ================= 名店 ================= */
-  .shops { margin-top: 16px; border-top: 1px solid var(--hairline); }
-  .shops-title {
-    font-size: 0.62rem;
-    letter-spacing: 0.3em;
-    color: var(--sub);
-    font-weight: 700;
-    padding: 10px 0 2px;
-  }
-  .shop-item {
-    display: flex;
-    gap: 14px;
-    padding: 10px 0;
-    border-bottom: 1px dotted var(--hairline);
-    align-items: flex-start;
-  }
-  .shop-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .shop-name {
-    font-family: var(--serif);
-    font-weight: 700;
-    color: var(--ink);
-    font-size: 0.92rem;
-    flex-shrink: 0;
-    min-width: 7.5em;
-    letter-spacing: 0.04em;
-    position: relative;
-    padding-left: 12px;
-  }
-  .shop-name::before {
-    content: "";
-    position: absolute;
-    left: 0; top: 0.55em;
-    width: 5px; height: 5px;
-    background: var(--lacquer);
-  }
-  .shop-desc { font-size: 0.86rem; color: var(--text); line-height: 1.9; }
-
-  /* ================= 辛さメーター ================= */
-  .spice { margin: 16px 0 14px; }
-  .spice-title {
-    font-size: 0.62rem;
-    letter-spacing: 0.3em;
-    color: var(--sub);
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .spice-bar {
-    height: 6px;
-    border-radius: 3px;
-    background: linear-gradient(90deg, #D9B65A 0%, #CE8B3B 30%, #BC5A2C 55%, #99321F 78%, #571E13 100%);
-    margin-bottom: 8px;
-  }
-  .spice-labels {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    white-space: nowrap;
-  }
-  .spice-labels .lv {
-    font-size: clamp(0.56rem, 2.6vw, 0.74rem);
-    font-weight: 700;
-    color: var(--dot, var(--text));
-    letter-spacing: 0;
-  }
-  .spice-labels .sep {
-    font-size: clamp(0.5rem, 2.2vw, 0.66rem);
-    color: var(--hairline);
-    font-weight: 700;
-    padding: 0 1px;
-  }
-
-  /* ================= ステップ ================= */
-  .steps { margin: 16px 0 4px; }
-  .step {
-    display: flex;
-    gap: 16px;
-    position: relative;
-    padding-bottom: 16px;
-  }
-  .step:last-child { padding-bottom: 0; }
-  .step:not(:last-child)::before {
-    content: "";
-    position: absolute;
-    left: 13px;
-    top: 30px;
-    bottom: 2px;
-    width: 1px;
-    background: var(--hairline);
-  }
-  .step-num {
-    flex-shrink: 0;
-    width: 27px; height: 27px;
-    border: 1px solid var(--lacquer);
-    border-radius: 50%;
-    color: var(--lacquer);
-    font-family: var(--serif);
-    font-weight: 700;
-    font-size: 0.88rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--white);
-    z-index: 1;
-  }
-  .step-body { font-size: 0.9rem; padding-top: 1px; }
-  .step-body b {
-    color: var(--ink);
-    font-weight: 700;
-    display: block;
-    line-height: 1.7;
-  }
-
-  /* ================= 公式リンク ================= */
-  .ext-links {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid var(--hairline);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-  }
-  .ext-links .ext-title {
-    font-size: 0.62rem;
-    letter-spacing: 0.3em;
-    color: var(--sub);
-    font-weight: 700;
-    width: 100%;
-  }
-  .ext-links a {
-    display: inline-block;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--lacquer);
-    text-decoration: none;
-    border: 1px solid var(--lacquer);
-    padding: 6px 16px;
-    letter-spacing: 0.08em;
-    transition: background 0.2s, color 0.2s;
-  }
-  .ext-links a::after { content: " ↗"; font-size: 0.7em; color: var(--gold); }
-  .ext-links a:active, .ext-links a:hover { background: var(--lacquer); color: var(--paper); }
-
-  /* ================= 喫茶メニュー ================= */
-  .menu-list { background: var(--white); border: 1px solid var(--hairline); }
-  .menu-item { padding: 18px 22px; }
-  .menu-item + .menu-item { border-top: 1px solid var(--hairline); }
-  .menu-item dt {
-    font-family: var(--serif);
-    font-weight: 700;
-    font-size: 1.02rem;
-    color: var(--ink);
-    letter-spacing: 0.06em;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .menu-item dt::before {
-    content: "";
-    width: 14px; height: 1px;
-    background: var(--gold);
-    flex-shrink: 0;
-  }
-  .menu-item dd { font-size: 0.88rem; color: var(--text); }
-
-  /* ================= 注記 ================= */
-  .note {
-    background: var(--paper-warm);
-    border-left: 2px solid var(--gold);
-    padding: 16px 18px;
-    font-size: 0.88rem;
-    margin: 20px 0;
-    line-height: 2.1;
-  }
-
-  /* ================= 名古屋弁 ================= */
-  .tag {
-    display: block;
-    font-family: var(--serif);
-    font-weight: 700;
-    font-size: 0.98rem;
-    color: var(--lacquer);
-    letter-spacing: 0.1em;
-    padding-bottom: 10px;
-    margin-bottom: 6px;
-    border-bottom: 1px solid var(--hairline);
-  }
-  .dialect { }
-  .word { padding: 12px 0; border-bottom: 1px dotted var(--hairline); }
-  .word:last-child { border-bottom: none; padding-bottom: 2px; }
-  .word dt {
-    font-family: var(--serif);
-    font-weight: 700;
-    color: var(--ink);
-    font-size: 1rem;
-    letter-spacing: 0.05em;
-    line-height: 1.7;
-    margin-bottom: 2px;
-  }
-  .word dt::before {
-    content: "「";
-    color: var(--gold);
-  }
-  .word dt::after {
-    content: "」";
-    color: var(--gold);
-  }
-  .word dd { font-size: 0.87rem; line-height: 1.95; color: var(--text); }
-
-  .example {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 20px 20px 18px;
-    font-size: 0.9rem;
-    margin-top: 20px;
-    line-height: 2.1;
-  }
-  .example .ex-label {
-    display: block;
-    font-size: 0.62rem;
-    letter-spacing: 0.3em;
+  header p {
+    margin-top: 12px;
     color: var(--gold-pale);
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  .example .ex-body { font-family: var(--serif); font-weight: 600; letter-spacing: 0.03em; }
-  .example .trans {
-    font-size: 0.78rem;
-    color: rgba(247,242,232,0.65);
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(247,242,232,0.15);
+    font-size: 13px;
+    letter-spacing: 0.2em;
   }
 
-  /* ================= 漫画 ================= */
-  .manga {
-    margin-top: 36px;
-    border: 1px solid var(--ink);
-    padding: 28px 22px;
-    text-align: center;
-    position: relative;
-    background: var(--white);
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
   }
-  .manga::before {
-    content: "";
-    position: absolute;
-    inset: 5px;
-    border: 1px solid var(--hairline);
-    pointer-events: none;
+
+  .toc {
+    list-style: none;
   }
-  .manga .badge {
-    font-size: 0.6rem;
-    letter-spacing: 0.45em;
-    text-indent: 0.45em;
-    color: var(--gold);
-    font-weight: 700;
+  .toc li + li {
+    margin-top: 16px;
+  }
+  .toc a {
     display: block;
-    margin-bottom: 10px;
-  }
-  .manga h3 {
-    font-family: var(--serif);
-    font-weight: 800;
-    color: var(--ink);
-    font-size: 1.3rem;
-    letter-spacing: 0.1em;
-    margin-bottom: 10px;
-  }
-  .manga p {
-    font-size: 0.84rem;
-    margin-bottom: 18px;
-    color: var(--sub);
-    line-height: 2;
-  }
-  .manga a {
-    display: inline-block;
-    background: var(--lacquer);
-    color: var(--paper);
+    background: var(--white);
+    border: 1px solid var(--hairline);
+    border-left: 4px solid var(--lacquer);
+    border-radius: 6px;
+    padding: 20px 24px;
     text-decoration: none;
-    font-size: 0.84rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    padding: 13px 36px;
-    transition: background 0.2s;
+    color: var(--text);
+    transition: box-shadow 0.2s, transform 0.2s;
   }
-  .manga a:active, .manga a:hover { background: var(--lacquer-deep); }
+  .toc a:hover {
+    box-shadow: 0 4px 16px rgba(34, 26, 21, 0.12);
+    transform: translateY(-2px);
+  }
+  .toc .title {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--lacquer);
+    letter-spacing: 0.06em;
+  }
+  .toc .desc {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--sub);
+    line-height: 1.8;
+  }
 
   footer {
     text-align: center;
-    padding: 0 0 48px;
-  }
-  footer .f-mark {
-    font-family: var(--serif);
-    font-weight: 700;
-    color: var(--lacquer);
-    font-size: 0.9rem;
-    letter-spacing: 0.3em;
-    text-indent: 0.3em;
-  }
-  footer .f-rule {
-    width: 32px; height: 1px;
-    background: var(--gold);
-    margin: 14px auto 0;
-  }
-
-  /* ================= トップへ ================= */
-  #toTop {
-    position: fixed;
-    right: 16px;
-    bottom: 20px;
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    background: var(--ink);
-    color: var(--gold-pale);
-    border: 1px solid rgba(228,206,156,0.4);
-    font-size: 0.95rem;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.28);
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 90;
-    font-family: var(--serif);
-  }
-  #toTop.show { opacity: 1; pointer-events: auto; }
-
-  /* ================= モバイル対応 ================= */
-  h2 .sub {
-    display: inline;
-  }
-  @media (max-width: 599px) {
-    h2 {
-      font-size: 1.18rem;
-      line-height: 1.7;
-      letter-spacing: 0.04em;
-    }
-    h2 .sub {
-      display: block;
-      font-size: 0.82em;
-      color: var(--sub);
-      margin-top: 2px;
-    }
-    .card h3 {
-      font-size: 1.05rem;
-      line-height: 1.6;
-    }
-    .sec-index .num {
-      font-size: 2.2rem;
-    }
-    .shop-item {
-      flex-direction: column;
-      gap: 2px;
-    }
-    .shop-name {
-      min-width: auto;
-    }
-  }
-
-  @media (min-width: 600px) {
-    body { font-size: 15.5px; }
-    header h1 { font-size: 2.5rem; }
+    padding: 24px;
+    font-size: 12px;
+    color: var(--sub);
+    border-top: 1px solid var(--hairline);
   }
 </style>
 </head>
-<body id="top">
+<body>
 
 <header>
-  <div class="hero-kanji">名古屋</div>
-  <p class="hero-eyebrow">NAGOYA MESHI COMPLETE GUIDE</p>
-  <h1>名古屋めし<br>徹底ガイド</h1>
-  <div class="hero-rule"></div>
-  <p class="intro">名古屋の食文化、通称「名古屋めし」は、独特の進化を遂げた日本屈指のグルメジャンルです。濃厚な赤味噌のコク、スパイシーな刺激、そして驚きの喫茶店文化。本資料では、観光で訪れる際に絶対に逃せない、名古屋めしの奥深い魅力を網羅的に解説します。</p>
+  <h1>目次</h1>
+  <p>PROJECT INDEX</p>
 </header>
 
-<nav>
-  <ul>
-    <li><a href="#men"><i>壱</i>麺文化</a></li>
-    <li><a href="#niku"><i>弐</i>揚げ物・肉</a></li>
-    <li><a href="#kissa"><i>参</i>喫茶店</a></li>
-    <li><a href="#sweets"><i>肆</i>スイーツ</a></li>
-    <li><a href="#miso"><i>伍</i>赤味噌</a></li>
-    <li><a href="#chishiki"><i>陸</i>観光知識</a></li>
-    <li><a href="#ben"><i>漆</i>名古屋弁</a></li>
-  </ul>
-</nav>
-
 <main>
-
-<!-- 1. 麺文化 -->
-<section id="men">
-  <div class="sec-head">
-    <div class="sec-index"><span class="num">01</span><span class="en">Noodles</span></div>
-    <h2>名古屋の麺文化<span class="sub"> ─ 伝統と革新の共演</span></h2>
-  </div>
-  <p class="lead">名古屋の麺料理は、定番のきしめんから刺激的な台湾ラーメンまで、多種多様なラインナップを誇ります。</p>
-
-  <div class="card">
-    <h3>きしめん</h3>
-    <span class="yomi">KISHIMEN</span>
-    <p>平たい麺が特徴の、名古屋を代表する伝統麺です。</p>
-    <div class="kv">
-      <div><span class="k">名称由来</span>具材にキジの肉を使った「きじめん」、紀州から伝わった「紀州麺」、あるいは碁石（棊子）のような形をしていた「棊子麺」など、諸説があります。</div>
-      <div><span class="k">おすすめの楽しみ方</span>冷たいきしめんは「きしころ（ころきしめん）」と呼ばれ、喉越しの良さが格別です。</div>
-    </div>
-    <div class="shops">
-      <p class="shops-title">名店ガイド</p>
-      <div class="shop-item"><span class="shop-name">住よし</span><span class="shop-desc">JR名古屋駅ホームにあり、出張者や観光客に絶大な人気を誇る立ち食い店。</span></div>
-      <div class="shop-item"><span class="shop-name">宮きしめん</span><span class="shop-desc">熱田神宮境内で味わえる、歴史ある名店。</span></div>
-      <div class="shop-item"><span class="shop-name">星ヶ丘製麺所</span><span class="shop-desc">現代的なスタイルで注目を集める人気店。</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>味噌煮込みうどん</h3>
-    <span class="yomi">MISO-NIKOMI UDON</span>
-    <p>濃厚な赤味噌のつゆと、驚くほどコシの強い（生煮えと錯覚するほどの固さ）麺が特徴です。</p>
-    <div class="kv">
-      <div><span class="k">こだわり</span>麺は小麦粉と水のみで打たれ、塩を使わないため、煮込んでも煮崩れせず独特の食感を保ちます。</div>
-      <div><span class="k">食べ方の作法</span>土鍋の蓋には空気穴がないのが一般的で、これは「蓋を皿代わりにして麺を冷ましながら食べる」ためです。</div>
-    </div>
-    <div class="shops">
-      <p class="shops-title">二大巨頭</p>
-      <div class="shop-item"><span class="shop-name">山本屋本店</span><span class="shop-desc">愛知・岐阜を中心に展開。漬物食べ放題のサービスが人気。</span></div>
-      <div class="shop-item"><span class="shop-name">山本屋総本家</span><span class="shop-desc">みそおでんも絶品。</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>台湾ラーメン</h3>
-    <span class="yomi">TAIWAN RAMEN</span>
-    <p>実は台湾には存在しない名古屋発祥の激辛ラーメン。辛さのレベルには裏メニューが存在します。</p>
-    <div class="spice">
-      <p class="spice-title">辛さレベル ─ 左から右へ激辛に</p>
-      <div class="spice-bar"></div>
-      <div class="spice-labels">
-        <span class="lv" style="--dot:#A8811F;">アメリカン</span><span class="sep">＜</span><span class="lv" style="--dot:#A6672A;">通常</span><span class="sep">＜</span><span class="lv" style="--dot:#A34E26;">イタリアン</span><span class="sep">＜</span><span class="lv" style="--dot:#8F3A22;">メキシカン</span><span class="sep">＜</span><span class="lv" style="--dot:#752417;">アフリカン</span><span class="sep">＜</span><span class="lv" style="--dot:#471209;">エイリアン</span>
-      </div>
-    </div>
-    <div class="shops">
-      <p class="shops-title">名店</p>
-      <div class="shop-item"><span class="shop-name">味仙</span><span class="shop-desc">台湾ラーメンの元祖として知られる有名店。本店は今池にあり、矢場店や大ナゴヤビルヂングにも店舗を構えていますが、店舗によってメニューや味や辛さが若干異なります。</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>スガキヤ</h3>
-    <span class="yomi">SUGAKIYA</span>
-    <p>名古屋のソウルフード。魚介出汁の利いた白湯スープとソフトクリームのセットが定番です。独特の「ラーメンフォーク」は必見です。店名は創業者の菅木周一氏に由来します。</p>
-    <div class="kv">
-      <div><span class="k">スーちゃん</span>マスコットキャラクターの「スーちゃん」は地元で愛されており、毎年3月頃にはラーメンが割引になったりする「スーちゃん祭」が開催されます。</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>あんかけスパゲッティ</h3>
-    <span class="yomi">ANKAKE SPAGHETTI</span>
-    <p>スパイシーなあんかけソースを太麺に絡めて食べる、ボリューム満点の一皿。</p>
-    <div class="kv">
-      <div><span class="k">定番メニュー「ミラカン」</span>野菜たっぷりの「カントリー」と、ハム・ウィンナーの「ミラネーゼ」を合体させた不動の人気メニューです。</div>
-      <div><span class="k">発祥</span>「スパゲティーハウス そ～れ」や「ヨコイ」が起源とされています。</div>
-    </div>
-  </div>
-</section>
-
-<!-- 2. 揚げ物と肉料理 -->
-<section id="niku">
-  <div class="sec-head">
-    <div class="sec-index"><span class="num">02</span><span class="en">Fried &amp; Meat</span></div>
-    <h2>揚げ物と肉料理<span class="sub"> ─ 圧倒的な満足感</span></h2>
-  </div>
-  <p class="lead">名古屋の肉料理は、一度食べたら忘れられないパンチの効いた味付けが特徴です。</p>
-
-  <div class="card">
-    <h3>手羽先の唐揚げ</h3>
-    <span class="yomi">TEBASAKI</span>
-    <p>ビールとの相性が抜群の、名古屋を代表するおつまみ。</p>
-    <div class="shops">
-      <div class="shop-item"><span class="shop-name">風来坊</span><span class="shop-desc">甘辛いごま風味が特徴。</span></div>
-      <div class="shop-item"><span class="shop-name">世界の山ちゃん</span><span class="shop-desc">刺激的な胡椒のスパイスが効いた「幻の手羽先」で有名。</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>味噌カツ</h3>
-    <span class="yomi">MISO-KATSU</span>
-    <p>甘辛い濃厚な味噌だれをたっぷりかけたトンカツです。</p>
-    <div class="shops">
-      <div class="shop-item"><span class="shop-name">矢場とん</span><span class="shop-desc">巨大な豚のキャラクター（正式名称：横綱ぶた）が目印。行列必至の人気店ですが、並んででも食べる価値があります。</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>ひつまぶし</h3>
-    <span class="yomi">HITSUMABUSHI</span>
-    <p>鰻を4つのステップで楽しむ、至高の贅沢グルメ。</p>
-    <div class="steps">
-      <div class="step"><div class="step-num">一</div><div class="step-body"><b>そのまま</b>鰻本来の旨味を味わう。</div></div>
-      <div class="step"><div class="step-num">二</div><div class="step-body"><b>薬味を添えて</b>葱、山葵、海苔で風味を変える。</div></div>
-      <div class="step"><div class="step-num">三</div><div class="step-body"><b>出汁茶漬け</b>旨味の凝縮された出汁でサラサラと。</div></div>
-      <div class="step"><div class="step-num">四</div><div class="step-body"><b>お好みで</b>最も気に入った食べ方で締めくくる。</div></div>
-    </div>
-    <div class="shops">
-      <div class="shop-item"><span class="shop-name">あつた蓬莱軒</span><span class="shop-desc">その代表格として知られる名店です。</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>名古屋コーチン ＆ ぴよりん</h3>
-    <span class="yomi">NAGOYA COCHIN / PIYORIN</span>
-    <div class="kv">
-      <div><span class="k">名古屋コーチン</span>日本三大地鶏の一つ。3月10日は「名古屋コーチンの日」です。「鳥開総本舗」の親子丼などでその弾力を楽しめます。</div>
-      <div><span class="k">ぴよりん</span>名古屋駅で大人気のひよこ型スイーツ。非常に繊細で、崩さずに持ち帰る「#ぴよりんチャレンジ」がSNSで話題になりました。</div>
-    </div>
-  </div>
-</section>
-
-<!-- 3. 喫茶店文化 -->
-<section id="kissa">
-  <div class="sec-head">
-    <div class="sec-index"><span class="num">03</span><span class="en">Kissaten</span></div>
-    <h2>喫茶店文化<span class="sub"> ─ おもてなしの精神</span></h2>
-  </div>
-  <p class="lead">名古屋の朝は喫茶店の「モーニング」から始まります。</p>
-
-  <dl class="menu-list">
-    <div class="menu-item">
-      <dt>モーニングサービス</dt>
-      <dd>ドリンクを注文すると、トーストやゆで卵が無料で付いてくる名古屋独自の習慣。</dd>
-    </div>
-    <div class="menu-item">
-      <dt>小倉トースト</dt>
-      <dd>厚切りトーストにたっぷりのあんこを乗せた、甘みと塩気の絶妙なバランス。</dd>
-    </div>
-    <div class="menu-item">
-      <dt>シロノワール</dt>
-      <dd>「コメダ珈琲店」の看板メニュー。温かいデニッシュに冷たいソフトクリームが乗った一品。</dd>
-    </div>
-    <div class="menu-item">
-      <dt>エビフライサンド</dt>
-      <dd>「コンパル」の名物。ボリューム満点で観光客にも大人気。</dd>
-    </div>
-  </dl>
-</section>
-
-<!-- 4. スイーツと手土産 -->
-<section id="sweets">
-  <div class="sec-head">
-    <div class="sec-index"><span class="num">04</span><span class="en">Sweets &amp; Gifts</span></div>
-    <h2>スイーツと手土産<span class="sub"> ─ あんこと味噌の伝統</span></h2>
-  </div>
-  <p class="lead">名古屋は和菓子店が多く、あんこ文化が非常に発達しています。</p>
-
-  <div class="card">
-    <div class="kv">
-      <div><span class="k">ういろう</span>米粉を使った蒸し菓子。老舗の「餅文總本店」や「青柳総本家」「大須ういろ」が有名です。最近では「スライムういろう」などのユニークなコラボも。</div>
-      <div><span class="k">鬼まんじゅう</span>角切りにしたさつまいもを小麦粉と砂糖の生地で包み、蒸し上げた名古屋の郷土和菓子。家庭の味としても親しまれています。</div>
-      <div><span class="k">えびせんべい</span>坂角総本舖の「ゆかり」は、贈答品の定番です。食べた瞬間から海老の風味が口いっぱいに広がります。</div>
-      <div><span class="k">なごやん</span>名古屋を代表する銘菓。最近ではクリーム入りの「生なごやん」も登場。</div>
-    </div>
-  </div>
-</section>
-
-<!-- 5. 赤味噌 -->
-<section id="miso">
-  <div class="sec-head">
-    <div class="sec-index"><span class="num">05</span><span class="en">Aka-Miso</span></div>
-    <h2>名古屋の味の決め手「赤味噌」</h2>
-  </div>
-  <p class="lead">名古屋めしの根幹を支えるのは、熟成期間が長く旨味が凝縮された「赤味噌（豆味噌）」です。</p>
-
-  <div class="card">
-    <div class="kv">
-      <div><span class="k">八丁味噌</span>岡崎城から八丁（約870m）の距離にある八帖町で作られる伝統的な味噌。</div>
-      <div><span class="k">万能みそだれ</span>家庭でも「つけてみそかけてみそ」などの商品が常備されており、どんな料理にも味噌をかけて楽しむのが名古屋流です。</div>
-    </div>
-  </div>
-</section>
-
-<!-- 6. 名古屋知識 -->
-<section id="chishiki">
-  <div class="sec-head">
-    <div class="sec-index"><span class="num">06</span><span class="en">Local Tips</span></div>
-    <h2>知っておくと楽しい名古屋知識</h2>
-  </div>
-
-  <div class="card" style="margin-top: 26px;">
-    <h3>観光エリア別おすすめ</h3>
-    <span class="yomi">AREA GUIDE</span>
-    <div class="kv">
-      <div><span class="k">栄・ラシック・松坂屋</span>有名店が凝縮されており、効率よく名古屋めしを味わえることが可能。</div>
-      <div><span class="k">大須商店街</span>食べ歩きの聖地。「新雀」のお団子や「李さんの唐揚げ」などが人気。</div>
-      <div><span class="k">名古屋駅（エスカ地下街）</span>新幹線に乗る直前まで名古屋めしを堪能できます。</div>
-    </div>
-  </div>
-
-  <div class="note">
-    名古屋めしは、その見た目のインパクト以上に、繊細なこだわりと地元愛に溢れています。ぜひお腹を空かせて、このユニークな食のワンダーランドを体験してください。
-  </div>
-</section>
-
-<!-- 名古屋弁 -->
-<section id="ben">
-  <div class="sec-head">
-    <div class="sec-index"><span class="num">07</span><span class="en">Nagoya Dialect</span></div>
-    <h2>名古屋弁の世界</h2>
-  </div>
-  <p class="lead">地元の方からこんな言葉が聞こえてくるかもしれません。</p>
-
-  <div class="card">
-    <span class="tag">挨拶と強調表現</span>
-    <dl class="dialect">
-      <div class="word"><dt>やっとかめ</dt><dd>「お久しぶり」という、名古屋弁を代表する非常に丁寧で温かい挨拶です。</dd></div>
-      <div class="word"><dt>でら・どら・どえらい</dt><dd>「とても」「すごく」を意味する強調表現で、感嘆の際によく使われます。</dd></div>
-      <div class="word"><dt>わや</dt><dd>「めちゃくちゃ」「台無し」「収拾がつかない」といった状態を表します。</dd></div>
-      <div class="word"><dt>おみゃーさん</dt><dd>「あなた」という親しみを込めた呼びかけです。</dd></div>
-      <div class="word"><dt>そんなことあらすか</dt><dd>「そんなはずはない」「ありえない」という強い否定の表現です。</dd></div>
-    </dl>
-  </div>
-
-  <div class="card">
-    <span class="tag">日常生活で使われる独特の動詞・形容詞</span>
-    <dl class="dialect">
-      <div class="word"><dt>机をつる</dt><dd>「机を運ぶ・移動させる」という意味で、学校などで日常的に使われます。</dd></div>
-      <div class="word"><dt>鍵をかう</dt><dd>「鍵をかける」ことを指します。</dd></div>
-      <div class="word"><dt>トキントキン</dt><dd>鉛筆の先などが「非常に鋭く尖っている」様子を表します。</dd></div>
-      <div class="word"><dt>しゃびしゃび</dt><dd>カレーや飲み物などの液体が「薄い」「水っぽい」様子を指します。</dd></div>
-      <div class="word"><dt>よーさん・ぎょーさん・よーけ</dt><dd>すべて「たくさん」「たっぷり」という意味で使われます。</dd></div>
-    </dl>
-  </div>
-
-  <div class="card">
-    <span class="tag">学校文化と地域特有の呼び方</span>
-    <dl class="dialect">
-      <div class="word"><dt>B紙（びーし）</dt><dd>一般的に「模造紙」と呼ばれる大きな紙を、名古屋では「B紙」と呼びます。</dd></div>
-      <div class="word"><dt>放課後</dt><dd>名古屋では、授業終了後だけでなく、「授業の合間の休み時間」を指して使われることがあります。</dd></div>
-      <div class="word"><dt>名（メイ）の省略</dt><dd>「名古屋」がつく名称を「名（メイ）」と略す習慣があり、名駅（名古屋駅）、名港（名古屋港）、名大（名古屋大学）などが代表例です。</dd></div>
-    </dl>
-  </div>
-
-  <div class="card">
-    <span class="tag">語尾と言い回し</span>
-    <dl class="dialect">
-      <div class="word"><dt>だがや（だぎゃー）・だがね・だがん</dt><dd>「である」という名古屋弁特有の親しみやすい語尾です。相手や状況に応じて使い分けられます。</dd></div>
-      <div class="word"><dt>こっちこやー</dt><dd>「こっちにおいで」という呼びかけです。</dd></div>
-      <div class="word"><dt>いかん</dt><dd>「だめ」「いけない」という意味です。</dd></div>
-    </dl>
-    <div class="example">
-      <span class="ex-label">音が重なる面白い例文</span>
-      <span class="ex-body">「キットカット買っとかんといかんかったのに、あんたが買っとかんかったで、いかんかったんだわ」</span>
-      <div class="trans">（キットカットを買っておかなければいけなかったのに、あなたが買っておかなかったからダメだったんだよ）</div>
-    </div>
-  </div>
-
-  <div class="manga">
-    <span class="badge">COMIC</span>
-    <h3>名古屋以外全部壊滅</h3>
-    <p>名古屋以外が壊滅した世界を舞台に、広島県民が反撃に挑む爆笑ご当地バトル漫画</p>
-    <a href="https://shonenjumpplus.com/episode/3270296674331482330" target="_blank" rel="noopener">少年ジャンプ＋で読む</a>
-  </div>
-</section>
-
-<footer>
-  <p class="f-mark">名古屋めし徹底ガイド</p>
-  <div class="f-rule"></div>
-</footer>
-
+  <ul class="toc">
+    <li>
+      <a href="nagoyameshi.html">
+        <span class="title">名古屋めし徹底ガイド</span>
+        <span class="desc">味噌カツ・手羽先・ひつまぶしなど、名古屋の食文化を紹介するガイドページ。</span>
+      </a>
+    </li>
+  </ul>
 </main>
 
-<button id="toTop" aria-label="ページの先頭へ戻る">上</button>
-<script>
-  var btn = document.getElementById('toTop');
-  window.addEventListener('scroll', function () {
-    if (window.scrollY > 400) { btn.classList.add('show'); } else { btn.classList.remove('show'); }
-  }, { passive: true });
-  btn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-</script>
+<footer>
+  Publish
+</footer>
+
 </body>
 </html>
