@@ -580,6 +580,38 @@
   }
   #toTop.show { opacity: 1; pointer-events: auto; }
 
+  /* ================= モバイル対応 ================= */
+  h2 .sub {
+    display: inline;
+  }
+  @media (max-width: 599px) {
+    h2 {
+      font-size: 1.18rem;
+      line-height: 1.7;
+      letter-spacing: 0.04em;
+    }
+    h2 .sub {
+      display: block;
+      font-size: 0.82em;
+      color: var(--sub);
+      margin-top: 2px;
+    }
+    .card h3 {
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+    .sec-index .num {
+      font-size: 2.2rem;
+    }
+    .shop-item {
+      flex-direction: column;
+      gap: 2px;
+    }
+    .shop-name {
+      min-width: auto;
+    }
+  }
+
   @media (min-width: 600px) {
     body { font-size: 15.5px; }
     header h1 { font-size: 2.5rem; }
@@ -614,7 +646,7 @@
 <section id="men">
   <div class="sec-head">
     <div class="sec-index"><span class="num">01</span><span class="en">Noodles</span></div>
-    <h2>名古屋の麺文化 ─ 伝統と革新の共演</h2>
+    <h2>名古屋の麺文化<span class="sub"> ─ 伝統と革新の共演</span></h2>
   </div>
   <p class="lead">名古屋の麺料理は、定番のきしめんから刺激的な台湾ラーメンまで、多種多様なラインナップを誇ります。</p>
 
@@ -690,7 +722,7 @@
 <section id="niku">
   <div class="sec-head">
     <div class="sec-index"><span class="num">02</span><span class="en">Fried &amp; Meat</span></div>
-    <h2>揚げ物と肉料理 ─ 圧倒的な満足感</h2>
+    <h2>揚げ物と肉料理<span class="sub"> ─ 圧倒的な満足感</span></h2>
   </div>
   <p class="lead">名古屋の肉料理は、一度食べたら忘れられないパンチの効いた味付けが特徴です。</p>
 
@@ -742,7 +774,7 @@
 <section id="kissa">
   <div class="sec-head">
     <div class="sec-index"><span class="num">03</span><span class="en">Kissaten</span></div>
-    <h2>喫茶店文化 ─ おもてなしの精神</h2>
+    <h2>喫茶店文化<span class="sub"> ─ おもてなしの精神</span></h2>
   </div>
   <p class="lead">名古屋の朝は喫茶店の「モーニング」から始まります。</p>
 
@@ -770,7 +802,7 @@
 <section id="sweets">
   <div class="sec-head">
     <div class="sec-index"><span class="num">04</span><span class="en">Sweets &amp; Gifts</span></div>
-    <h2>スイーツと手土産 ─ あんこと味噌の伝統</h2>
+    <h2>スイーツと手土産<span class="sub"> ─ あんこと味噌の伝統</span></h2>
   </div>
   <p class="lead">名古屋は和菓子店が多く、あんこ文化が非常に発達しています。</p>
 
