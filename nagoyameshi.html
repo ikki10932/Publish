@@ -108,41 +108,33 @@
     background: rgba(34,26,21,0.97);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
     border-bottom: 1px solid rgba(185,138,47,0.35);
   }
-  nav::-webkit-scrollbar { display: none; }
   nav ul {
     list-style: none;
     display: flex;
-    width: max-content;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 640px;
     margin: 0 auto;
+    padding: 4px 8px;
   }
   nav a {
     display: block;
     color: rgba(247,242,232,0.85);
     text-decoration: none;
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     font-weight: 500;
-    letter-spacing: 0.12em;
-    padding: 13px 16px;
+    letter-spacing: 0.08em;
+    padding: 6px 10px;
     white-space: nowrap;
     border-bottom: 2px solid transparent;
     transition: color 0.2s, border-color 0.2s;
   }
   nav a:active, nav a:hover { color: var(--gold-pale); border-bottom-color: var(--gold); }
-  nav a i {
-    font-style: normal;
-    font-family: var(--serif);
-    color: var(--gold);
-    margin-right: 6px;
-    font-size: 0.72rem;
-  }
 
   main { max-width: 640px; margin: 0 auto; padding: 40px 20px 64px; }
-  section { margin-bottom: 64px; scroll-margin-top: 60px; }
+  section { margin-bottom: 64px; scroll-margin-top: 84px; }
 
   /* ================= 章見出し ================= */
   .sec-head { margin-bottom: 8px; }
@@ -630,13 +622,13 @@
 
 <nav>
   <ul>
-    <li><a href="#men"><i>壱</i>麺文化</a></li>
-    <li><a href="#niku"><i>弐</i>揚げ物・肉</a></li>
-    <li><a href="#kissa"><i>参</i>喫茶店</a></li>
-    <li><a href="#sweets"><i>肆</i>スイーツ</a></li>
-    <li><a href="#miso"><i>伍</i>赤味噌</a></li>
-    <li><a href="#chishiki"><i>陸</i>観光知識</a></li>
-    <li><a href="#ben"><i>漆</i>名古屋弁</a></li>
+    <li><a href="#men">麺文化</a></li>
+    <li><a href="#niku">揚げ物・肉</a></li>
+    <li><a href="#kissa">喫茶店</a></li>
+    <li><a href="#sweets">スイーツ</a></li>
+    <li><a href="#miso">赤味噌</a></li>
+    <li><a href="#chishiki">観光知識</a></li>
+    <li><a href="#ben">名古屋弁</a></li>
   </ul>
 </nav>
 
@@ -676,9 +668,10 @@
     </div>
     <div class="shops">
       <p class="shops-title">二大巨頭</p>
-      <div class="shop-item"><span class="shop-name">山本屋本店</span><span class="shop-desc">愛知・岐阜を中心に展開。漬物食べ放題のサービスが人気。</span></div>
-      <div class="shop-item"><span class="shop-name">山本屋総本家</span><span class="shop-desc">みそおでんも絶品。</span></div>
+      <div class="shop-item"><span class="shop-name">山本屋本店</span><span class="shop-desc">1907年創業。愛知・岐阜を中心に展開。漬物食べ放題のサービスが人気。</span></div>
+      <div class="shop-item"><span class="shop-name">山本屋総本家</span><span class="shop-desc">1925年に名古屋・大須で創業。みそおでんも絶品。</span></div>
     </div>
+    <div class="note">山本屋本店と山本屋総本家は、名前が似ているだけで創業者も歴史も違う別の味噌煮込みうどん店です。</div>
   </div>
 
   <div class="card">
