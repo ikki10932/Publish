@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#fcf8f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141b24" media="(prefers-color-scheme: dark)">
+<meta name="format-detection" content="telephone=no">
+<title>安心、楽しい、大丈夫。— 自己肯定感ノート</title>
+<style>
+  :root{
+    --paper:#fcf8f1;
+    --paper2:#f5efe3;
+    --ink:#1c3d5e;
+    --ink-soft:#4a6884;
+    --accent:#e5885a;
+    --accent-soft:#f4c9ae;
+    --line:#d9cdb8;
+    --shadow:rgba(28,61,94,.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#141b24;
+      --paper2:#1b242f;
+      --ink:#e6eef6;
+      --ink-soft:#9fb4c8;
+      --accent:#f0996b;
+      --accent-soft:#8a5638;
+      --line:#2d3b4a;
+      --shadow:rgba(0,0,0,.35);
+    }
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{
+    scroll-behavior:smooth;
+    -webkit-text-size-adjust:100%;   /* 横向きにしても文字が勝手に太らないように */
+  }
+  body{
+    font-family:"Hiragino Maru Gothic ProN","Yu Gothic UI","Yu Gothic",
+                "Zen Maru Gothic","Meiryo",system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.9;
+    letter-spacing:.04em;
+    -webkit-font-smoothing:antialiased;
+    padding:0 20px 80px;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(229,136,90,.06), transparent 55%),
+      radial-gradient(circle at 85% 70%, rgba(28,61,94,.05), transparent 50%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+
+  /* ---------- ヘッダー ---------- */
+  header{padding:56px 0 8px;text-align:center}
+  .date{
+    font-size:.82rem;color:var(--ink-soft);letter-spacing:.22em;
+    margin-bottom:26px;
+  }
+  .kicker{
+    display:inline-block;font-size:.72rem;letter-spacing:.3em;
+    color:var(--accent);border:1px solid var(--accent-soft);
+    padding:5px 16px 4px;border-radius:99px;margin-bottom:22px;
+  }
+
+  /* ---------- 今日の言葉 ---------- */
+  .today{
+    position:relative;
+    background:var(--paper2);
+    border:2px solid var(--ink);
+    border-radius:4px;
+    padding:52px 26px 44px;
+    margin:8px 0 14px;
+    cursor:pointer;
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    transition:transform .18s ease, box-shadow .18s ease;
+    box-shadow:6px 6px 0 var(--shadow);
+    overflow:hidden;
+  }
+  .today:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--shadow)}
+  .today::before,.today::after{
+    content:"";position:absolute;width:12px;height:12px;
+    border:2px solid var(--accent);
+  }
+  .today::before{top:10px;left:10px;border-right:0;border-bottom:0}
+  .today::after{bottom:10px;right:10px;border-left:0;border-top:0}
+
+  .today .cat{
+    font-size:.74rem;letter-spacing:.24em;color:var(--ink-soft);
+    margin-bottom:18px;
+  }
+  .today .phrase{
+    font-size:clamp(1.7rem,6.4vw,2.7rem);
+    font-weight:700;line-height:1.55;letter-spacing:.06em;
+  }
+  .today .hint{
+    margin-top:26px;font-size:.76rem;color:var(--ink-soft);
+    letter-spacing:.1em;
+  }
+
+  /* 唱えるカウンタ */
+  .counter{
+    display:flex;justify-content:center;gap:12px;margin-top:22px;
+  }
+  .dot{
+    width:13px;height:13px;border-radius:50%;
+    border:2px solid var(--accent);background:transparent;
+    transition:background .3s ease, transform .3s ease;
+  }
+  .dot.on{background:var(--accent);transform:scale(1.25)}
+
+  .ripple{
+    position:absolute;border-radius:50%;
+    background:var(--accent-soft);opacity:.55;
+    transform:scale(0);animation:rip .6s ease-out forwards;
+    pointer-events:none;
+  }
+  @keyframes rip{to{transform:scale(14);opacity:0}}
+
+  .done-msg{
+    text-align:center;font-size:.88rem;color:var(--accent);
+    height:1.6em;margin-bottom:10px;letter-spacing:.1em;
+    opacity:0;transition:opacity .4s ease;
+  }
+  .done-msg.show{opacity:1}
+
+  .streak{
+    text-align:center;font-size:.8rem;color:var(--ink-soft);
+    letter-spacing:.12em;margin-bottom:46px;
+  }
+  .streak b{color:var(--accent);font-size:1.15rem}
+
+  /* ---------- セクション見出し ---------- */
+  h2{
+    font-size:.94rem;font-weight:700;letter-spacing:.24em;
+    color:var(--ink);margin:56px 0 6px;
+    display:flex;align-items:center;gap:14px;
+  }
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .lead{font-size:.82rem;color:var(--ink-soft);margin-bottom:24px}
+
+  /* ---------- カード ---------- */
+  .cards{display:grid;gap:14px}
+  .card{
+    background:var(--paper2);
+    border:1.5px solid var(--line);
+    border-radius:3px;
+    overflow:hidden;
+    transition:border-color .2s ease;
+  }
+  .card.open{border-color:var(--ink)}
+  .card-head{
+    display:flex;align-items:center;gap:16px;
+    padding:20px 20px;cursor:pointer;user-select:none;
+    -webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+  }
+  .badge{
+    flex:none;width:60px;text-align:center;
+    font-size:.6rem;letter-spacing:.06em;line-height:1.5;
+    color:var(--accent);border:1px solid var(--accent-soft);
+    border-radius:2px;padding:6px 2px;
+  }
+  .card-phrase{
+    flex:1;font-size:clamp(1.02rem,3.6vw,1.24rem);font-weight:700;
+    letter-spacing:.04em;
+  }
+  .chev{
+    flex:none;color:var(--ink-soft);font-size:.75rem;
+    transition:transform .25s ease;
+  }
+  .card.open .chev{transform:rotate(180deg)}
+  .card-body{
+    max-height:0;overflow:hidden;
+    transition:max-height .35s ease;
+  }
+  .card-body .inner{
+    padding:0 22px 24px;
+    font-size:.9rem;color:var(--ink-soft);line-height:2.05;
+    border-top:1px dashed var(--line);margin-top:0;padding-top:20px;
+  }
+  .say{
+    display:block;margin-top:16px;font-size:.82rem;
+    color:var(--accent);letter-spacing:.08em;
+  }
+
+  /* ---------- 自分の言葉 ---------- */
+  .mine{display:grid;gap:12px}
+  .mine-item{
+    display:flex;align-items:flex-start;gap:14px;
+    background:var(--paper2);border:1.5px solid var(--line);
+    border-radius:3px;padding:18px 18px;
+    font-size:1rem;font-weight:700;line-height:1.8;
+  }
+  .mine-item .mark{color:var(--accent);flex:none;font-size:.9rem;padding-top:.25em}
+  .mine-item .txt{flex:1;white-space:pre-wrap}
+
+  .add-row{display:flex;gap:10px;margin-top:6px}
+  input[type=text]{
+    flex:1;font:inherit;font-size:.95rem;color:var(--ink);
+    background:var(--paper2);border:1.5px dashed var(--line);
+    border-radius:3px;padding:15px 16px;outline:none;
+    transition:border-color .2s ease;
+  }
+  input[type=text]:focus{border-color:var(--accent);border-style:solid}
+  input[type=text]::placeholder{color:var(--ink-soft);opacity:.65}
+  button.add{
+    font:inherit;font-size:.85rem;font-weight:700;letter-spacing:.1em;
+    color:var(--paper);background:var(--ink);
+    border:0;border-radius:3px;padding:0 22px;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    transition:background .2s ease;
+  }
+  button.add:hover{background:var(--accent)}
+  button.add.ghost{
+    background:transparent;color:var(--ink-soft);
+    border:1.5px solid var(--line);
+  }
+  button.add.ghost:hover{background:transparent;color:var(--accent);border-color:var(--accent-soft)}
+
+  /* ---------- セルフコンパッション ---------- */
+  .compassion{
+    background:var(--paper2);
+    border-left:4px solid var(--accent);
+    border-radius:0 3px 3px 0;
+    padding:26px 24px;
+  }
+  .compassion .q{
+    font-size:1.08rem;font-weight:700;line-height:1.85;margin-bottom:16px;
+  }
+  .compassion p{font-size:.88rem;color:var(--ink-soft);line-height:2}
+  .compassion .ex{
+    font-size:.82rem;color:var(--ink-soft);
+    margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);
+  }
+  .compassion .ex span{color:var(--accent)}
+
+  /* ---------- 記入パネル ---------- */
+  .panel{
+    background:var(--paper2);border:1.5px solid var(--line);
+    border-radius:3px;padding:22px 20px;
+  }
+  .field{margin-bottom:18px}
+  .field:last-of-type{margin-bottom:0}
+  .field label{
+    display:block;font-size:.78rem;color:var(--ink-soft);
+    letter-spacing:.12em;margin-bottom:9px;
+  }
+  textarea{
+    display:block;width:100%;font:inherit;font-size:.95rem;line-height:1.9;
+    color:var(--ink);background:var(--paper);
+    border:1.5px dashed var(--line);border-radius:3px;
+    padding:13px 14px;outline:none;resize:vertical;
+    transition:border-color .2s ease;
+  }
+  textarea:focus{border-color:var(--accent);border-style:solid}
+  textarea::placeholder{color:var(--ink-soft);opacity:.6}
+
+  .save-row{
+    display:flex;justify-content:flex-end;align-items:center;
+    gap:14px;margin-top:16px;
+  }
+  .save-row button.add{padding:11px 22px}
+  .saved-note{
+    font-size:.76rem;color:var(--accent);letter-spacing:.1em;
+    opacity:0;transition:opacity .5s ease;
+  }
+  .saved-note.show{opacity:1}
+
+  /* ２１日の進み */
+  .prog{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+  .cell{
+    width:15px;height:15px;border:1px solid var(--line);
+    border-radius:2px;transition:background .3s ease;
+  }
+  .cell.on{background:var(--accent);border-color:var(--accent)}
+  .prog-note{
+    font-size:.76rem;color:var(--ink-soft);
+    letter-spacing:.1em;margin-top:12px;
+  }
+
+  /* 積もっていく記録 */
+  .log{margin-top:16px;display:grid;gap:10px}
+  .log-item{
+    background:var(--paper2);border:1px solid var(--line);
+    border-left:3px solid var(--accent-soft);
+    border-radius:0 3px 3px 0;padding:14px 16px;
+  }
+  .log-item .when{
+    font-size:.7rem;color:var(--ink-soft);letter-spacing:.16em;
+    margin-bottom:8px;
+  }
+  .log-item .line{font-size:.9rem;line-height:1.9;white-space:pre-wrap}
+  .log-item .line + .line{margin-top:7px}
+  .log-item .tag{
+    color:var(--accent);font-size:.72rem;letter-spacing:.08em;
+    margin-right:9px;
+  }
+  .log-empty{font-size:.82rem;color:var(--ink-soft)}
+  .more{
+    display:block;width:100%;font:inherit;font-size:.78rem;letter-spacing:.12em;
+    color:var(--ink-soft);background:none;border:1px dashed var(--line);
+    border-radius:3px;padding:11px;cursor:pointer;
+    transition:color .2s ease, border-color .2s ease;
+  }
+  .more:hover{color:var(--accent);border-color:var(--accent-soft)}
+
+  /* 今日の問いかけ */
+  .q-text{
+    font-size:1.06rem;font-weight:700;line-height:1.85;margin-bottom:18px;
+  }
+  .q-text .qmark{color:var(--accent);margin-right:12px}
+
+  /* ---------- 心がざわついた日の道具 ---------- */
+  .tool-desc{font-size:.86rem;color:var(--ink-soft);line-height:2;margin-bottom:20px}
+  .tool-ex{
+    font-size:.8rem;color:var(--ink-soft);line-height:1.95;
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:3px;padding:13px 15px;margin-top:18px;
+  }
+  .tool-ex .lab{color:var(--accent);margin-right:7px}
+  .fill{font-size:.96rem;line-height:2.9;color:var(--ink)}
+  .fill + .fill{margin-top:6px}
+  .fill .nw{white-space:nowrap}  /* 「の立場だったら、」などを途中で割らない */
+  input.inline{
+    font:inherit;font-size:.94rem;color:var(--ink);
+    background:transparent;border:0;border-bottom:1.5px solid var(--line);
+    padding:2px 6px;outline:none;max-width:100%;
+    width:min(150px,100%);
+    transition:border-color .2s ease;
+  }
+  input.inline:focus{border-color:var(--accent)}
+  input.inline.wide{width:min(290px,100%)}
+
+  .scale-now{text-align:center;font-size:.84rem;color:var(--ink-soft);margin:16px 0 2px}
+  .scale-now b{color:var(--accent);font-size:1.6rem;margin:0 5px}
+  input[type=range]{width:100%;margin:6px 0 4px;accent-color:var(--accent)}
+  .scale-marks{
+    display:flex;justify-content:space-between;
+    font-size:.68rem;color:var(--ink-soft);letter-spacing:.06em;
+  }
+
+  .stack{display:grid;gap:9px;margin-top:18px}
+  .stack-item{
+    display:flex;gap:12px;background:var(--paper);
+    border:1px solid var(--line);border-radius:3px;padding:12px 14px;
+    font-size:.88rem;line-height:1.9;
+  }
+  .stack-item .mark{color:var(--accent);flex:none}
+  .stack-item .txt{flex:1}
+  .stack-item .when{
+    display:block;font-size:.68rem;color:var(--ink-soft);
+    letter-spacing:.14em;margin-top:6px;
+  }
+
+  /* ---------- なぜ効くのか（折りたたみ） ---------- */
+  .why{
+    margin-top:16px;border:1px dashed var(--line);
+    border-radius:3px;background:var(--paper2);
+  }
+  .why summary{
+    cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent;
+    padding:13px 16px;font-size:.77rem;letter-spacing:.14em;
+    color:var(--ink-soft);display:flex;align-items:center;gap:10px;
+    transition:color .2s ease;
+  }
+  .why summary::-webkit-details-marker{display:none}
+  .why summary::before{content:"？";color:var(--accent);font-weight:700}
+  .why summary:hover{color:var(--ink)}
+  .why[open] summary{border-bottom:1px dashed var(--line);color:var(--ink)}
+  .why-body{
+    padding:17px 18px 19px;font-size:.84rem;
+    color:var(--ink-soft);line-height:2.1;
+  }
+  .why-body p + p{margin-top:13px}
+  .why-body b{color:var(--ink)}
+  .why-body .src{
+    font-size:.71rem;letter-spacing:.02em;line-height:1.95;
+    padding-top:13px;margin-top:15px;border-top:1px dashed var(--line);
+  }
+  .why-body a{
+    color:var(--accent);text-decoration:none;
+    border-bottom:1px solid var(--accent-soft);
+  }
+  .why-body a:hover{border-bottom-color:var(--accent)}
+
+  /* 出典 */
+  .refs{font-size:.78rem;color:var(--ink-soft);line-height:2.2}
+  .refs li{margin-left:1.2em;padding-left:.3em}
+  .refs a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+
+  /* ---------- 書き出し ---------- */
+  .ex-row{display:flex;flex-wrap:wrap;gap:10px}
+  .ex-row button.add{padding:14px 20px;line-height:1.6}
+  .ex-note{
+    font-size:.78rem;color:var(--ink-soft);
+    letter-spacing:.06em;line-height:2;margin-top:16px;
+  }
+  #exPreview{margin-top:18px;padding-top:18px;border-top:1px dashed var(--line)}
+  #exBox{font-size:.82rem;line-height:1.85;margin-bottom:12px}
+  #exPreview .saved-note{display:block;margin-top:12px;text-align:right}
+
+  footer{
+    margin-top:64px;padding-top:24px;border-top:1px solid var(--line);
+    text-align:center;font-size:.72rem;color:var(--ink-soft);
+    letter-spacing:.1em;line-height:2.2;
+  }
+
+  /* ---------- スマホ ---------- */
+  @media (max-width:600px){
+    body{
+      padding:0 14px calc(56px + env(safe-area-inset-bottom));
+      line-height:1.85;
+    }
+    header{padding:32px 0 4px}
+    .date{font-size:.74rem;letter-spacing:.14em;margin-bottom:16px}
+    .kicker{margin-bottom:18px}
+
+    .today{padding:38px 18px 32px;box-shadow:4px 4px 0 var(--shadow)}
+    .today .cat{margin-bottom:14px}
+    .today .hint{margin-top:20px;font-size:.72rem}
+    .counter{margin-top:18px}
+    .streak{margin-bottom:38px}
+
+    h2{margin:44px 0 6px;letter-spacing:.16em;gap:10px}
+
+    .card-head{padding:16px 14px;gap:12px}
+    .badge{width:52px;font-size:.57rem;padding:5px 2px}
+    .card-body .inner{padding:18px 16px 20px}
+    .panel{padding:18px 15px}
+    .compassion{padding:22px 16px}
+    .mine-item{padding:15px 14px}
+    .log-item{padding:13px 14px}
+    .stack-item{padding:11px 12px}
+    .why summary{padding:14px 14px}
+    .why-body{padding:15px 15px 17px}
+
+    /* iOS は 16px 未満の入力欄に触れると画面を勝手に拡大するので、ここだけ px で固定する */
+    input[type=text], textarea, input.inline, #exBox{font-size:16px}
+    textarea{padding:12px 12px}
+    #exBox{line-height:1.8}
+    button.add{min-height:48px;padding:0 18px}
+    .add-row{gap:8px}
+    .save-row{flex-wrap:wrap}
+    .save-row button.add{padding:13px 20px}
+    .ex-row button.add{flex:1 1 auto}   /* 折り返しても幅がそろうように */
+
+    /* 穴うめ文は、入力欄を１行使って指で押しやすくする */
+    .fill{line-height:2.1}
+    .fill .nw{white-space:normal}
+    input.inline, input.inline.wide{display:block;width:100%;margin:5px 0 3px}
+
+    input[type=range]{height:36px}
+    .scale-now b{font-size:1.5rem}
+    .prog{gap:7px}
+    .cell{width:16px;height:16px}
+
+    footer{margin-top:52px}
+  }
+
+  /* 指で操作する端末なら、横向きでも入力欄は 16px 以上・ボタンは押しやすい高さで */
+  @media (pointer:coarse){
+    input[type=text], textarea, input.inline, #exBox{font-size:16px}
+    button.add{min-height:48px}
+    .why summary{padding-top:15px;padding-bottom:15px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="date" id="date"></div>
+    <div class="kicker">今日のことば</div>
+  </header>
+
+  <div class="today" id="today">
+    <div class="cat" id="cat"></div>
+    <div class="phrase" id="phrase"></div>
+    <div class="counter">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="hint">タップして、声に出して３回となえる</div>
+  </div>
+
+  <div class="done-msg" id="doneMsg">今日のぶん、できました。</div>
+  <div class="streak" id="streak"></div>
+
+  <h2>今日のふりかえり</h2>
+  <p class="lead">寝る前に、みっつだけ。どんな小さなことでもかまいません。<br>いいことが増えるのではなく、もともとあったものに気づけるようになります。</p>
+  <div class="panel">
+    <div class="field">
+      <label>今日、自分がした「いいこと」</label>
+      <textarea id="dGood" rows="2" placeholder="席をゆずった／ゴミを拾った／早く寝た" maxlength="200"></textarea>
+    </div>
+    <div class="field">
+      <label>どうして、それが起きたんだろう？</label>
+      <textarea id="dWhy" rows="2" placeholder="疲れに気づいて早めに切り上げたから／こちらから声をかけたから" maxlength="200"></textarea>
+    </div>
+    <div class="field">
+      <label>今日見つけた、誰かの「いいところ」</label>
+      <textarea id="dNice" rows="2" placeholder="○○さんは、いつも先にあいさつしてくれる" maxlength="200"></textarea>
+    </div>
+    <div class="save-row">
+      <span class="saved-note" id="dSaved">記録しました。</span>
+      <button class="add" id="dSave">今日のぶんを記録</button>
+    </div>
+    <div class="prog" id="dProg"></div>
+    <div class="prog-note" id="dProgNote"></div>
+    <div class="prog-note">１日とんでも、積み上げたものは消えません。書けない日があるのが普通です。</div>
+  </div>
+
+  <details class="why">
+    <summary>なぜ、これが効くのか</summary>
+    <div class="why-body">
+      <p>「よかったこと」を３つ書き出す実践は、ポジティブ心理学で最も検証されてきたもののひとつです。１週間つづけただけで幸福感が上がり、抑うつが下がり、その差は<b>６か月後まで残っていました</b>。</p>
+      <p>ただし、効き目の中心は「よかったこと」そのものではなく、<b>「どうしてそれが起きたのか」を書く</b>ところにあると考えられています。人の脳は生き延びるために悪いことを優先して覚えるようにできていて、いいことは素通りしてしまう。原因まで書くと、それが自分の行動や周りの人と結びつき、素通りできなくなります。</p>
+      <p>起きるいいことの数が増えるわけではありません。<b>もともとあったものに、気づけるようになる</b>だけです。</p>
+      <p class="src">Seligman ら（2005）／
+        <a href="https://ggia.berkeley.edu/practice/three-good-things" target="_blank" rel="noopener">Three Good Things — Greater Good in Action（UC Berkeley）</a></p>
+    </div>
+  </details>
+
+  <details class="why">
+    <summary>とばした日があっても大丈夫な理由</summary>
+    <div class="why-body">
+      <p>「２１日つづければ習慣になる」という話の出どころは、１９６０年代の美容外科医が<b>患者が新しい顔に慣れるまでの日数</b>について書いた一文で、習慣の研究ではありませんでした。</p>
+      <p>実際に測った研究では、行動が自動化するまで<b>中央値で６６日、人と内容によって１８日から２５４日</b>と大きく幅がありました。２１日で身につかなくても、何もおかしくありません。</p>
+      <p>そして、この研究のいちばん大事な発見は別のところにあります。<b>１日抜かしても、習慣化はほとんど妨げられませんでした</b>。効かなくなるのは、とばした日ではなく、とばしたせいで自分を責めてやめてしまうときです。</p>
+      <p>むしろ、感謝を数える実践では<b>週１回のグループのほうが、週３回のグループより幸福感が上がった</b>という報告もあります。毎日やると作業になり、慣れて効かなくなることがあるからです。<b>書けない日は、とばしてください。</b>２１個のマスは、それでも減りません。</p>
+      <p class="src">Lally ら（2010）習慣形成の実測／Lyubomirsky ら（2005）実践の頻度／
+        <a href="https://www.surrey.ac.uk/news/does-it-really-take-66-days-form-habit-we-asked-expert-dr-pippa-lally" target="_blank" rel="noopener">Dr Pippa Lally 本人による解説（University of Surrey）</a></p>
+    </div>
+  </details>
+
+  <div class="log" id="dLog"></div>
+
+  <h2>今日の問いかけ</h2>
+  <p class="lead">正解のない質問です。思いつくままにどうぞ。<br>日が変わると、問いも変わります。</p>
+  <div class="panel">
+    <div class="q-text"><span class="qmark">Q</span><span id="qText"></span></div>
+    <textarea id="qAns" rows="4" placeholder="ひとことでも、箇条書きでも。" maxlength="400"></textarea>
+    <div class="save-row">
+      <span class="saved-note" id="qSaved">書きとめました。</span>
+      <button class="add" id="qSave">書きとめる</button>
+    </div>
+  </div>
+  <details class="why">
+    <summary>なぜ、命令ではなく問いなのか</summary>
+    <div class="why-body">
+      <p>「やるぞ」と自分に言い聞かせるより、「やれるかな？」と<b>自分に問いかけたほうが、実際の行動につながる</b>ことが実験で示されています。問いの形にすると、外から与えられた理由ではなく、自分の中にある理由が出てくるからだと考えられています。</p>
+      <p>だからこのノートの質問には、正解も、書くべき模範解答もありません。うまく答えられなくても、問いを一度読んだだけで働きはじめます。</p>
+      <p class="src">Senay・Albarracín・Noguchi（2010）／
+        <a href="https://pubmed.ncbi.nlm.nih.gov/20424090/" target="_blank" rel="noopener">Motivating goal-directed behavior through introspective self-talk（PubMed）</a></p>
+    </div>
+  </details>
+
+  <div class="log" id="qLog"></div>
+
+  <h2>６つの自己肯定感</h2>
+  <p class="lead">気になるところをタップすると、その言葉のはたらきが開きます。</p>
+  <div class="cards" id="cards"></div>
+
+  <h2>わたしの言葉</h2>
+  <p class="lead">自分で選んだ言葉がいちばん効きます。追加すると、今日のことばにも登場します。<br>一度書き入れた言葉は消えません。積み重ねていってください。</p>
+  <div class="mine" id="mine"></div>
+  <div class="add-row">
+    <input type="text" id="newWord" placeholder="自分を励ます言葉を書き入れる" maxlength="60">
+    <button class="add" id="addBtn">追加</button>
+  </div>
+
+  <details class="why">
+    <summary>言葉の選び方には、コツがある</summary>
+    <div class="why-body">
+      <p>励ましの言葉なら何でも効く、というわけではないことが分かっています。ある実験では、「私は愛される人間だ」と繰り返してもらったところ、<b>もともと自分に自信がない人ほど、かえって気分が下がりました</b>。言葉を必要としている人ほど、跳ね返されてしまったのです。</p>
+      <p>理由は、人には受け入れられる幅があるからです。その幅の外にある言葉は、口にした瞬間に「そんなわけない」という反論を自分の中に呼び起こしてしまいます。</p>
+      <p>だから、選ぶ基準はひとつだけ。<b>「ほんの少しでも、本当かもしれない」と思える言葉かどうか</b>です。</p>
+      <p>実際に効いた言葉には、いくつか特徴があります。<b>「安心、楽しい、大丈夫」「ま、いっか」のように、自分の値打ちを判定しない言葉</b>。「私はすごい」より受け入れやすく、反論が起きません。そして<b>「ヤッター！」のように、動きや声とセットになった言葉</b>。頭で信じる必要がないぶん、素通りできます。</p>
+      <p>それでもしんどい日は、断定をゆるめてください。「私はできる」を「私はどうすればできる？」という問いに変える。「大丈夫だ」を「大丈夫になりつつある」に変える。同じ実験でも、<b>その言葉が当てはまる面と当てはまらない面の両方を見た人は、気分が下がりませんでした</b>。</p>
+      <p class="src">Wood・Perunovic・Lee（2009）Positive Self-Statements: Power for Some, Peril for Others／
+        <a href="https://www.nationalgeographic.com/science/article/the-peril-of-positive-thinking-why-positive-messages-hurt-people-with-low-self-esteem" target="_blank" rel="noopener">解説記事（National Geographic）</a></p>
+    </div>
+  </details>
+
+  <h2>心がざわついた日に</h2>
+  <p class="lead">不安なとき、もやもやするとき。ひとつだけ開いて、試してみてください。</p>
+  <div class="cards" id="tools">
+
+    <div class="card">
+      <div class="card-head">
+        <div class="badge">いま<br>何点？</div>
+        <div class="card-phrase">エモーショナル・スケーリング</div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="inner">
+          <div class="tool-desc">これまで経験した最高の不安や恐れを１０点としたら、いま感じている気持ちは何点でしょうか。<br>大切なのは０点にすることではありません。<b>１点だけ</b>下げるにはどうすればいいか、を考えます。</div>
+          <div class="fill">
+            <input type="text" class="inline" id="scName" value="不安な気持ち" maxlength="20"> <span class="nw">は １０点中 何点？</span>
+          </div>
+          <div class="scale-now">いま <b id="scNow">5</b> 点</div>
+          <input type="range" id="scRange" min="0" max="10" step="1" value="5">
+          <div class="scale-marks"><span>0</span><span>5</span><span>10</span></div>
+          <div class="field" style="margin-top:20px">
+            <label>なぜ、１０点ではないのだろう？（いま何が支えている？）</label>
+            <textarea id="scHold" rows="2" placeholder="眠れてはいる／話せる人がいる／前も何とかなった" maxlength="200"></textarea>
+          </div>
+          <div class="field">
+            <label>１点だけ下げるには、何ができそう？</label>
+            <textarea id="scStep" rows="2" placeholder="お風呂に入る／明日の朝に考えると決める" maxlength="200"></textarea>
+          </div>
+          <div class="save-row">
+            <span class="saved-note" id="scSaved">記録しました。</span>
+            <button class="add" id="scSave">記録する</button>
+          </div>
+          <div class="stack" id="scLog"></div>
+          <details class="why">
+            <summary>なぜ、０点を目指さないのか</summary>
+            <div class="why-body">
+              <p>点数をつけること自体が目的ではありません。大事なのは<b>そのあとの２つの問い</b>です。</p>
+              <p>ひとつは「なぜ１０点ではないのか」。解決志向のセラピーでは、この問いが最も効くとされています。「まだ１０点じゃない」ということは、それを押しとどめている何かが<b>すでにあなたの中にある</b>ということだからです。眠れている、話せる人がいる、前も何とかなった——探すと必ず見つかります。</p>
+              <p>もうひとつが「１点だけ下げるには」。０点にしようとすると打つ手がなくなりますが、１点なら今日の自分にもできます。</p>
+              <p class="src"><a href="https://positivepsychology.com/solution-focused-therapy-techniques-worksheets/" target="_blank" rel="noopener">Solution-Focused Therapy Techniques（PositivePsychology.com）</a></p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="badge">先に<br>決める</div>
+        <div class="card-phrase">イフゼン プランニング</div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="inner">
+          <div class="tool-desc">ネガティブな感情に飲みこまれそうな場面を先に想定して、「もし〜が起きたら、〜する」と決めておきます。<br>あらかじめ用意しておけば、そのときが来ても落ち込みません。<br><b>「もし」は、いつ・どこで起きるかまで具体的に</b>書くほどよく効きます。</div>
+          <div class="fill">
+            （if）もし <input type="text" class="inline wide" id="ifIf" placeholder="嫌われてしまうかもと思っ" maxlength="60"> <span class="nw">たら、</span>
+          </div>
+          <div class="fill">
+            （then）<input type="text" class="inline wide" id="ifThen" placeholder="嫌うのは相手の問題だと考える" maxlength="60"> <span class="nw">する。</span>
+          </div>
+          <div class="tool-ex">
+            <span class="lab">例）</span>もし <b>嫌われてしまうかもと思っ</b> たら、<b>嫌うのは相手の問題、私の価値は変わらないと考える</b>。
+          </div>
+          <div class="save-row">
+            <span class="saved-note" id="ifSaved">お守りにしました。</span>
+            <button class="add" id="ifSave">お守りにする</button>
+          </div>
+          <div class="stack" id="ifLog"></div>
+          <details class="why">
+            <summary>なぜ、先に決めておくと効くのか</summary>
+            <div class="why-body">
+              <p>「もし〜たら、〜する」という形で先に決めておく方法は、心理学で <b>実行意図</b> と呼ばれ、９０を超える研究をまとめた分析で<b>中〜大の効果</b>が確認されています。ふつうの「がんばろう」という決意より、はっきり強く効きます。</p>
+              <p>理由は、意志の力を使わなくて済むからです。「もし」の場面が来た瞬間に、決めておいた行動が自動的に立ち上がる。動揺している最中に何をするか考えなくてよくなります。</p>
+              <p>効かせるコツは２つ。<b>「もし」を具体的にする</b>こと（「不安になったら」より「日曜の夜、布団に入って明日を考えはじめたら」）。そして、<b>ときどき読み返す</b>こと。くり返した人ほど効果が大きくなっています。</p>
+              <p class="src">Gollwitzer・Sheeran（2006）実行意図メタ分析（d = .65）／
+                <a href="https://www.researchgate.net/publication/37367696_Implementation_Intentions_and_Goal_Achievement_A_Meta-Analysis_of_Effects_and_Processes" target="_blank" rel="noopener">Implementation Intentions and Goal Achievement</a></p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="badge">視点を<br>変える</div>
+        <div class="card-phrase">立場を入れかえてみる</div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="inner">
+          <div class="tool-desc">誰かへのネガティブな感情に支配されたときは、相手の立場に立ってみます。相手の感情が見えてくると、気持ちがほどけます。</div>
+          <div class="fill">
+            もし、私が <input type="text" class="inline" id="pcWho" placeholder="上司" maxlength="24"> <span class="nw">の立場だったら、</span>
+          </div>
+          <div class="fill">
+            <input type="text" class="inline wide" id="pcThink" placeholder="もっと成長してほしい" maxlength="60"> <span class="nw">と考えて、</span><input type="text" class="inline" id="pcDo" placeholder="叱責" maxlength="24"> <span class="nw">する。</span>
+          </div>
+
+          <div class="tool-desc" style="margin-top:26px">尊敬するあの人だったら、どう考えてどう行動するでしょうか。自分から離れると、視点が変わります。</div>
+          <div class="fill">
+            もし、私が <input type="text" class="inline" id="rpWho" placeholder="ココ・シャネル" maxlength="24"> <span class="nw">だったら、</span>
+          </div>
+          <div class="fill">
+            <input type="text" class="inline wide" id="rpDo" placeholder="今の自分をどう楽しむかを考える" maxlength="60"> <span class="nw">する。</span>
+          </div>
+
+          <div class="tool-desc" style="margin-top:26px">最後に、自分を名前で呼んでみます。「私は」を「◯◯は」に変えるだけで、友人の相談に乗るときの落ち着きが戻ってきます。</div>
+          <div class="fill">
+            <input type="text" class="inline" id="tpName" placeholder="自分の名前" maxlength="12"> <span class="nw">は、いまどうして、そう感じているんだろう？</span>
+          </div>
+          <textarea id="tpTalk" rows="3" placeholder="◯◯は、いま〜だと感じている。それは〜だからだ。だったら、〜すればいい。" maxlength="300"></textarea>
+
+          <div class="save-row">
+            <span class="saved-note" id="shSaved">書きとめました。</span>
+            <button class="add" id="shSave">書きとめる</button>
+          </div>
+          <div class="stack" id="shLog"></div>
+          <details class="why">
+            <summary>なぜ、自分から離れると見えるのか</summary>
+            <div class="why-body">
+              <p>人は<b>他人の悩みには賢く助言できるのに、自分の同じ悩みになると急に下手になります</b>。心理学ではこれを「ソロモンのパラドックス」と呼びます。旧約聖書のソロモン王が、人々には知恵ある裁きを下しながら自分の家庭は治められなかった逸話にちなみます。</p>
+              <p>実験では、自分の問題を<b>他人事のように距離をとって考えるよう指示するだけで、この差が消えました</b>。頭が良くなるのではなく、近すぎて見えなかっただけなのです。</p>
+              <p>いちばん手軽な方法が、自分を名前で呼ぶこと。「私はどうしよう」を「◯◯はどうしたらいい？」に変えるだけで感情の高ぶりが下がることが、脳活動の計測でも確かめられています。しかも、歯を食いしばって我慢するときとは違い、<b>ほとんど努力がいりません</b>。</p>
+              <p class="src">Grossmann・Kross（2014）ソロモンのパラドックス／Kross ら（2014）三人称セルフトーク／
+                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5495792/" target="_blank" rel="noopener">Third-person self-talk facilitates emotion regulation without engaging cognitive control</a></p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>できなかった日に</h2>
+  <div class="compassion">
+    <div class="q">もし親友が同じことで落ち込んでいたら、<br>あなたは何と声をかけますか。</div>
+    <p>セルフコンパッションは、自分への甘やかしではありません。<br>
+       自分を責める代わりに、親友にかけるのと同じ言葉を自分にも向けるということです。</p>
+    <p style="margin-top:16px">つらいときは、順番に３つだけ、心の中で言ってみてください。</p>
+    <div class="ex">
+      <span>１）</span>「いま、つらい。」　— まず、つらさを打ち消さずに認める<br>
+      <span>２）</span>「つらいのは、私だけじゃない。」　— 誰にでも起きることだと思い出す<br>
+      <span>３）</span>「私が私に、やさしくできますように。」　— そのうえで自分に向ける
+    </div>
+    <div class="ex">
+      <span>例）</span>お酒を飲みすぎた日 → 「飲みすぎちゃったね。疲れてたんだよ」<br>
+      <span>例）</span>理不尽な目にあった日 → 「それはつらかったね」とまず共感する
+    </div>
+  </div>
+
+  <details class="why">
+    <summary>３つの順番には意味がある</summary>
+    <div class="why-body">
+      <p>セルフコンパッションの研究では、これを３つの要素で説明します。<b>マインドフルネス</b>（つらさを否定も誇張もせず、そのまま認める）、<b>共通の人間性</b>（つらいのは自分だけの欠陥ではないと知る）、<b>自分へのやさしさ</b>（そのうえで自分を責めるのをやめる）。</p>
+      <p>順番が大事です。「大丈夫」といきなり打ち消すと、つらさは行き場をなくして残ります。まず認める、ひとりではないと知る、それから優しくする。この順で通ると、無理に元気を出さなくても力が戻ってきます。</p>
+      <p>とくに効くのが２番目です。落ち込んでいるとき人は「こんなことで参るのは自分だけだ」と思い込みますが、それは孤立感が見せている錯覚で、たいてい事実ではありません。</p>
+      <p class="src">Kristin Neff（2003–）／
+        <a href="https://self-compassion.org/what-is-self-compassion/" target="_blank" rel="noopener">What is Self-Compassion?（self-compassion.org）</a></p>
+    </div>
+  </details>
+
+  <h2>書いたものを取り出す</h2>
+  <p class="lead">これまで書いたものを、まとめて外に持ち出せます。<br>読み返したいとき、機種を変えるとき、どこかに残しておきたいときに。</p>
+  <div class="panel">
+    <div class="ex-row">
+      <button class="add" id="exText">読める形で書き出す</button>
+      <button class="add ghost" id="exJson">まるごと保存（JSON）</button>
+    </div>
+    <p class="ex-note" id="exCount"></p>
+    <p class="ex-note">記録はこの端末の中だけに保存されています。ブラウザの履歴を消すと消えてしまうので、ときどき書き出しておくと安心です。</p>
+    <div id="exPreview" hidden>
+      <textarea id="exBox" rows="10" readonly></textarea>
+      <div class="ex-row">
+        <button class="add" id="exCopy">コピー</button>
+        <button class="add ghost" id="exShare" hidden>共有・保存</button>
+        <button class="add ghost" id="exDl">ファイルにする</button>
+      </div>
+      <span class="saved-note" id="exSaved">コピーしました。</span>
+    </div>
+  </div>
+
+  <details class="why" style="margin-top:56px">
+    <summary>このノートが下敷きにしたもの</summary>
+    <div class="why-body">
+      <p>言葉とワークは書籍『安心、楽しい、大丈夫。』とその自己肯定感ワークシートから。各ワークの組み立てには、以下の研究を参考にしています。</p>
+      <ul class="refs">
+        <li>Seligman ら（2005）— よかったこと３つと、その原因を書く実践
+          <a href="https://ggia.berkeley.edu/practice/three-good-things" target="_blank" rel="noopener">Greater Good in Action</a></li>
+        <li>Lally ら（2010）— 習慣化は中央値６６日。１日抜けても妨げられない
+          <a href="https://www.surrey.ac.uk/news/does-it-really-take-66-days-form-habit-we-asked-expert-dr-pippa-lally" target="_blank" rel="noopener">University of Surrey</a></li>
+        <li>Gollwitzer・Sheeran（2006）— 実行意図（もし〜たら、〜する）のメタ分析
+          <a href="https://www.researchgate.net/publication/37367696_Implementation_Intentions_and_Goal_Achievement_A_Meta-Analysis_of_Effects_and_Processes" target="_blank" rel="noopener">ResearchGate</a></li>
+        <li>Grossmann・Kross（2014）／Kross ら（2014）— 自己距離化と三人称セルフトーク
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5495792/" target="_blank" rel="noopener">PMC</a></li>
+        <li>Senay ら（2010）— 宣言より問いかけのほうが行動につながる
+          <a href="https://pubmed.ncbi.nlm.nih.gov/20424090/" target="_blank" rel="noopener">PubMed</a></li>
+        <li>Wood ら（2009）— 遠すぎる励ましは逆効果になりうる
+          <a href="https://www.nationalgeographic.com/science/article/the-peril-of-positive-thinking-why-positive-messages-hurt-people-with-low-self-esteem" target="_blank" rel="noopener">National Geographic</a></li>
+        <li>Neff（2003–）— セルフコンパッションの３要素
+          <a href="https://self-compassion.org/what-is-self-compassion/" target="_blank" rel="noopener">self-compassion.org</a></li>
+        <li>解決志向ブリーフセラピー — スケーリングと「なぜ、それより低くないのか」
+          <a href="https://positivepsychology.com/solution-focused-therapy-techniques-worksheets/" target="_blank" rel="noopener">PositivePsychology.com</a></li>
+      </ul>
+      <p class="src">これらは心の不調の治療ではありません。つらさが長びくときは、ひとりで抱えずに専門家に相談してください。</p>
+    </div>
+  </details>
+
+  <footer>
+    安心、安心 ♪ &nbsp; 楽しい、楽しい ♪ &nbsp; 大丈夫、大丈夫 ♪<br>
+    『安心、楽しい、大丈夫。』より
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var CARDS = [
+    {
+      cat:"自己受容感",
+      phrase:"安心、楽しい、大丈夫。",
+      desc:"日ごろからポジティブな言葉を使うことは効果的なアファメーションです。口ぐせのように習慣化すれば、潜在意識に届き、脳が勝手に自己肯定感を高めてくれます。",
+      say:"「安心、安心♪ 楽しい、楽しい♪ 大丈夫、大丈夫♪」とリズムよく声に出す"
+    },
+    {
+      cat:"自己効力感",
+      phrase:"やった〜！ / ヤッター！",
+      desc:"胸を張るポーズをするとテストステロンが分泌され、ポジティブになる効果があることが研究で明らかになっています。ポーズと同時にポジティブな言葉を言うことで、アファメーション効果が倍増します。",
+      say:"伸びをしながら両手をにぎって上に突き上げ、「ヤッター！」と声に出す"
+    },
+    {
+      cat:"自尊感情",
+      phrase:"自分に〇",
+      desc:"「自分に〇をつける」と言ったときは押してもビクとも動かないのに、同じ人が「自分に×をつける」と言ったときは押されると簡単に動いてしまう。それほど、自分に「〇」をつけることは大切です。",
+      say:"心の中で、今日の自分に〇をつける"
+    },
+    {
+      cat:"自己有用感",
+      phrase:"やれる！できる！大丈夫！",
+      desc:"自分が言った言葉と他人が言った言葉を区別できないという脳の性質を利用したアファメーションです。テンポのいいフレーズなので、口に出して言いやすいでしょう。",
+      say:"自分だけでなく、周りの人にも合言葉のように伝える"
+    },
+    {
+      cat:"自己決定感",
+      phrase:"ま、いっか！",
+      desc:"一度区切りをつけることで、凝り固まった思考から抜け出し、客観的に物事を見ることができます。すると気持ちに余裕ができ、不思議と行動に移せる自分に気づくはずです。",
+      say:"決めあぐねているとき、「ま、いっか。」と声に出してみる"
+    },
+    {
+      cat:"自己信頼感",
+      phrase:"ツイてる！",
+      desc:"強力なアファメーションの言葉。いつも言うことで、脳が自然とツイていることを探し出します。すると運のいいことが自分のまわりにたくさん集まってくるのです。",
+      say:"習慣にして、ツイてる自分・モッテる自分に書き換えていく"
+    }
+  ];
+
+  var DEFAULT_MINE = [
+    "行動しなければ何も変わらない。成功者は行動してる。",
+    "これでいいのだ〜　これでいいのだ〜"
+  ];
+
+  /* ワークシート「自己肯定感が高まる魔法の質問」より。日替わりで１問ずつ出す */
+  var QUESTIONS = [
+    "あなたの理想とするライフスタイルは？",
+    "自由に時間とお金を使えるとしたら、何をしたい？",
+    "１ヵ月休みがあったら、何をする？",
+    "どんな服も着こなせるとしたら、どんなオシャレをしたい？",
+    "あなたが思う最高の１日とは、どんな１日？",
+    "あなたが最高に幸せを感じるのは、どんな瞬間？",
+    "あなたはどうほめられたら、最高にうれしい？",
+    "あなたはどんな人と一緒にいたら、最高に楽しい？"
+  ];
+
+  var LS = {
+    mine:"jkk_mine",
+    last:"jkk_last",
+    streak:"jkk_streak",
+    count:"jkk_count",
+    diary:"jkk_diary",
+    qa:"jkk_qa",
+    ifthen:"jkk_ifthen",
+    scale:"jkk_scale",
+    shift:"jkk_shift",
+    name:"jkk_name"
+  };
+
+  function get(k, fb){
+    try{ var v = localStorage.getItem(k); return v === null ? fb : v; }
+    catch(e){ return fb; }
+  }
+  function set(k, v){
+    try{ localStorage.setItem(k, v); }catch(e){}
+  }
+
+  function todayKey(){
+    var d = new Date();
+    return d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+  }
+
+  /* 記録用の共通ヘルパー（配列を JSON で持つ） */
+  function loadList(key){
+    try{
+      var a = JSON.parse(get(key, "[]"));
+      return Object.prototype.toString.call(a) === "[object Array]" ? a : [];
+    }catch(e){ return []; }
+  }
+  function saveList(key, a){ set(key, JSON.stringify(a)); }
+
+  function stamp(){
+    var d = new Date();
+    return d.getFullYear() + "年" + (d.getMonth()+1) + "月" + d.getDate() + "日（" + WEEK[d.getDay()] + "）";
+  }
+  function val(id){ return document.getElementById(id).value.trim(); }
+  function flash(id){
+    var el = document.getElementById(id);
+    el.className = "saved-note show";
+    setTimeout(function(){ el.className = "saved-note"; }, 2600);
+  }
+  /* 開いているカードは中身が増えると高さが変わるので測り直す */
+  function refreshOpen(){
+    var opens = document.querySelectorAll(".card.open");
+    for(var i = 0; i < opens.length; i++){
+      var b = opens[i].querySelector(".card-body");
+      if(b) b.style.maxHeight = b.scrollHeight + "px";
+    }
+  }
+  /* 積み上がった記録の１行を組み立てる */
+  function stackItem(text, when){
+    var row = document.createElement("div");
+    row.className = "stack-item";
+    var mark = document.createElement("span");
+    mark.className = "mark";
+    mark.textContent = "❝";
+    var txt = document.createElement("span");
+    txt.className = "txt";
+    txt.textContent = text;
+    if(when){
+      var w = document.createElement("span");
+      w.className = "when";
+      w.textContent = when;
+      txt.appendChild(w);
+    }
+    row.appendChild(mark);
+    row.appendChild(txt);
+    return row;
+  }
+  function dayNumber(){
+    // ローカル日付ベースの通し日数（日替わり抽選と連続日数の判定に使う）
+    var d = new Date();
+    return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
+  }
+
+  /* ---------- 自分の言葉 ---------- */
+  function loadMine(){
+    var raw = get(LS.mine, null);
+    if(raw === null) return DEFAULT_MINE.slice();
+    try{
+      var a = JSON.parse(raw);
+      return Object.prototype.toString.call(a) === "[object Array]" ? a : DEFAULT_MINE.slice();
+    }catch(e){ return DEFAULT_MINE.slice(); }
+  }
+  function saveMine(a){ set(LS.mine, JSON.stringify(a)); }
+
+  var mine = loadMine();
+
+  function renderMine(){
+    var box = document.getElementById("mine");
+    box.innerHTML = "";
+    if(mine.length === 0){
+      var p = document.createElement("div");
+      p.className = "lead";
+      p.textContent = "まだ書き入れていません。下の欄からどうぞ。";
+      box.appendChild(p);
+      return;
+    }
+    mine.forEach(function(t){
+      var row = document.createElement("div");
+      row.className = "mine-item";
+
+      var mark = document.createElement("span");
+      mark.className = "mark";
+      mark.textContent = "❝";
+
+      var txt = document.createElement("span");
+      txt.className = "txt";
+      txt.textContent = t;
+
+      row.appendChild(mark);
+      row.appendChild(txt);
+      box.appendChild(row);
+    });
+  }
+
+  document.getElementById("addBtn").addEventListener("click", addWord);
+  document.getElementById("newWord").addEventListener("keydown", function(e){
+    if(e.key === "Enter") addWord();
+  });
+  function addWord(){
+    var el = document.getElementById("newWord");
+    var v = el.value.trim();
+    if(!v) return;
+    mine.push(v);
+    saveMine(mine);
+    el.value = "";
+    renderMine();
+  }
+
+  /* ---------- 今日のことば ---------- */
+  function pickToday(){
+    var pool = CARDS.map(function(c){
+      return {cat:c.cat + " が高まる言葉", phrase:c.phrase};
+    });
+    mine.forEach(function(t){
+      pool.push({cat:"わたしの言葉", phrase:t});
+    });
+    return pool[dayNumber() % pool.length];
+  }
+
+  function renderToday(){
+    var t = pickToday();
+    document.getElementById("cat").textContent = t.cat;
+    document.getElementById("phrase").textContent = t.phrase;
+  }
+
+  var WEEK = ["日","月","火","水","木","金","土"];
+  (function renderDate(){
+    var d = new Date();
+    document.getElementById("date").textContent =
+      d.getFullYear() + "年 " + (d.getMonth()+1) + "月 " + d.getDate() + "日 （" + WEEK[d.getDay()] + "）";
+  })();
+
+  /* ---------- 唱えるカウンタ & 連続日数 ---------- */
+  var dots = document.querySelectorAll(".dot");
+  var doneMsg = document.getElementById("doneMsg");
+  var countKey = get(LS.count, "");
+  var count = 0;
+  if(countKey.indexOf(todayKey() + ":") === 0){
+    count = parseInt(countKey.split(":")[1], 10) || 0;
+  }
+
+  function paint(){
+    for(var i = 0; i < dots.length; i++){
+      if(i < count) dots[i].className = "dot on";
+      else dots[i].className = "dot";
+    }
+    if(count >= 3) doneMsg.className = "done-msg show";
+  }
+
+  function markDone(){
+    var last = get(LS.last, "");
+    var streak = parseInt(get(LS.streak, "0"), 10) || 0;
+    var today = String(dayNumber());
+    if(last === today) return;              // 今日はカウント済み
+    if(last === String(dayNumber() - 1)) streak += 1;   // 昨日から継続
+    else streak = 1;                        // 途切れた／初日
+    set(LS.last, today);
+    set(LS.streak, String(streak));
+    renderStreak();
+  }
+
+  function renderStreak(){
+    var streak = parseInt(get(LS.streak, "0"), 10) || 0;
+    var last = get(LS.last, "");
+    var el = document.getElementById("streak");
+    if(streak === 0){
+      el.textContent = "まずは今日から。";
+      return;
+    }
+    // 昨日以前で止まっている場合も、これまでの積み重ねとして表示する
+    var alive = (last === String(dayNumber()) || last === String(dayNumber() - 1));
+    el.innerHTML = alive
+      ? "つづけて <b>" + streak + "</b> 日"
+      : "これまで <b>" + streak + "</b> 日 ・ 今日からまた１日目";
+  }
+
+  document.getElementById("today").addEventListener("click", function(e){
+    // 波紋
+    var r = document.createElement("span");
+    r.className = "ripple";
+    var box = this.getBoundingClientRect();
+    r.style.left = (e.clientX - box.left - 10) + "px";
+    r.style.top  = (e.clientY - box.top  - 10) + "px";
+    r.style.width = r.style.height = "20px";
+    this.appendChild(r);
+    setTimeout(function(){ if(r.parentNode) r.parentNode.removeChild(r); }, 620);
+
+    if(count < 3){
+      count += 1;
+      set(LS.count, todayKey() + ":" + count);
+      paint();
+      if(count === 3) markDone();
+    }
+  });
+
+  /* ---------- カード ---------- */
+  (function renderCards(){
+    var box = document.getElementById("cards");
+    CARDS.forEach(function(c){
+      var card = document.createElement("div");
+      card.className = "card";
+
+      var head = document.createElement("div");
+      head.className = "card-head";
+
+      var badge = document.createElement("div");
+      badge.className = "badge";
+      badge.textContent = c.cat;
+
+      var ph = document.createElement("div");
+      ph.className = "card-phrase";
+      ph.textContent = c.phrase;
+
+      var chev = document.createElement("div");
+      chev.className = "chev";
+      chev.textContent = "▼";
+
+      head.appendChild(badge);
+      head.appendChild(ph);
+      head.appendChild(chev);
+
+      var body = document.createElement("div");
+      body.className = "card-body";
+      var inner = document.createElement("div");
+      inner.className = "inner";
+      inner.textContent = c.desc;
+      var say = document.createElement("span");
+      say.className = "say";
+      say.textContent = "▶ " + c.say;
+      inner.appendChild(say);
+      body.appendChild(inner);
+
+      head.addEventListener("click", function(){
+        var opened = card.className.indexOf("open") !== -1;
+        if(opened){
+          card.className = "card";
+          body.style.maxHeight = "0px";
+        }else{
+          card.className = "card open";
+          body.style.maxHeight = body.scrollHeight + "px";
+        }
+      });
+
+      card.appendChild(head);
+      card.appendChild(body);
+      box.appendChild(card);
+    });
+  })();
+
+  /* ---------- 今日のふりかえり（いいことした日記 ＋ 誰かのいいとこ探し） ---------- */
+  var diary = loadList(LS.diary);
+  var diaryAll = false;
+
+  function todayEntry(){
+    var k = todayKey();
+    for(var i = 0; i < diary.length; i++){ if(diary[i].d === k) return diary[i]; }
+    return null;
+  }
+
+  function renderDiaryProg(){
+    var n = diary.length;
+    var pos = n === 0 ? 0 : ((n - 1) % 21) + 1;
+    var round = n === 0 ? 0 : Math.floor((n - 1) / 21);
+    var box = document.getElementById("dProg");
+    box.innerHTML = "";
+    for(var i = 1; i <= 21; i++){
+      var c = document.createElement("div");
+      c.className = i <= pos ? "cell on" : "cell";
+      box.appendChild(c);
+    }
+    var note = document.getElementById("dProgNote");
+    if(n === 0){
+      note.textContent = "２１日つづけるのが目標です。まずは今日から。";
+    }else if(pos === 21){
+      note.textContent = "２１日、書ききりました。ここからまた１日目です。（ぜんぶで " + n + " 日ぶん）";
+    }else{
+      note.textContent = "２１日のうち " + pos + " 日目"
+        + (round > 0 ? "・" + (round + 1) + "周め" : "")
+        + " ／ ぜんぶで " + n + " 日ぶん";
+    }
+  }
+
+  function diaryCard(e){
+    var box = document.createElement("div");
+    box.className = "log-item";
+    var when = document.createElement("div");
+    when.className = "when";
+    when.textContent = e.label || e.d;
+    box.appendChild(when);
+    if(e.good){
+      var g = document.createElement("div");
+      g.className = "line";
+      var gt = document.createElement("span");
+      gt.className = "tag";
+      gt.textContent = "いいこと";
+      g.appendChild(gt);
+      g.appendChild(document.createTextNode(e.good));
+      box.appendChild(g);
+    }
+    if(e.why){
+      var w = document.createElement("div");
+      w.className = "line";
+      var wt = document.createElement("span");
+      wt.className = "tag";
+      wt.textContent = "なぜなら";
+      w.appendChild(wt);
+      w.appendChild(document.createTextNode(e.why));
+      box.appendChild(w);
+    }
+    if(e.nice){
+      var n = document.createElement("div");
+      n.className = "line";
+      var nt = document.createElement("span");
+      nt.className = "tag";
+      nt.textContent = "いいところ";
+      n.appendChild(nt);
+      n.appendChild(document.createTextNode(e.nice));
+      box.appendChild(n);
+    }
+    return box;
+  }
+
+  function renderDiaryLog(){
+    var box = document.getElementById("dLog");
+    box.innerHTML = "";
+    if(diary.length === 0){
+      var p = document.createElement("div");
+      p.className = "log-empty";
+      p.textContent = "まだ記録はありません。今日のぶんからどうぞ。";
+      box.appendChild(p);
+      return;
+    }
+    var list = diary.slice().reverse();
+    var lim = diaryAll ? list.length : Math.min(list.length, 5);
+    for(var i = 0; i < lim; i++){ box.appendChild(diaryCard(list[i])); }
+    if(!diaryAll && list.length > 5){
+      var b = document.createElement("button");
+      b.className = "more";
+      b.type = "button";
+      b.textContent = "これまでの記録をぜんぶ読む（" + list.length + "日ぶん）";
+      b.addEventListener("click", function(){ diaryAll = true; renderDiaryLog(); });
+      box.appendChild(b);
+    }
+  }
+
+  document.getElementById("dSave").addEventListener("click", function(){
+    var g = val("dGood"), w = val("dWhy"), n = val("dNice");
+    if(!g && !w && !n) return;
+    var e = todayEntry();
+    if(e){
+      e.good = g;
+      e.why = w;
+      e.nice = n;
+    }else{
+      diary.push({d:todayKey(), label:stamp(), good:g, why:w, nice:n});
+    }
+    saveList(LS.diary, diary);
+    flash("dSaved");
+    renderDiaryProg();
+    renderDiaryLog();
+  });
+
+  (function initDiary(){
+    var e = todayEntry();
+    if(e){
+      document.getElementById("dGood").value = e.good || "";
+      document.getElementById("dWhy").value = e.why || "";
+      document.getElementById("dNice").value = e.nice || "";
+    }
+    renderDiaryProg();
+    renderDiaryLog();
+  })();
+
+  /* ---------- 今日の問いかけ（魔法の質問） ---------- */
+  var qa = loadList(LS.qa);
+  var qaAll = false;
+  var todayQ = QUESTIONS[dayNumber() % QUESTIONS.length];
+
+  function todayAnswer(){
+    var k = todayKey();
+    for(var i = 0; i < qa.length; i++){ if(qa[i].d === k) return qa[i]; }
+    return null;
+  }
+
+  function renderQaLog(){
+    var box = document.getElementById("qLog");
+    box.innerHTML = "";
+    if(qa.length === 0){
+      var p = document.createElement("div");
+      p.className = "log-empty";
+      p.textContent = "答えは消えません。ここに積もっていきます。";
+      box.appendChild(p);
+      return;
+    }
+    var list = qa.slice().reverse();
+    var lim = qaAll ? list.length : Math.min(list.length, 3);
+    for(var i = 0; i < lim; i++){
+      var e = list[i];
+      var item = document.createElement("div");
+      item.className = "log-item";
+      var when = document.createElement("div");
+      when.className = "when";
+      when.textContent = e.label || e.d;
+      var q = document.createElement("div");
+      q.className = "line";
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = "Q";
+      q.appendChild(tag);
+      q.appendChild(document.createTextNode(e.q));
+      var a = document.createElement("div");
+      a.className = "line";
+      a.textContent = e.a;
+      item.appendChild(when);
+      item.appendChild(q);
+      item.appendChild(a);
+      box.appendChild(item);
+    }
+    if(!qaAll && list.length > 3){
+      var b = document.createElement("button");
+      b.className = "more";
+      b.type = "button";
+      b.textContent = "これまでの答えをぜんぶ読む（" + list.length + "件）";
+      b.addEventListener("click", function(){ qaAll = true; renderQaLog(); });
+      box.appendChild(b);
+    }
+  }
+
+  document.getElementById("qSave").addEventListener("click", function(){
+    var a = val("qAns");
+    if(!a) return;
+    var e = todayAnswer();
+    if(e){
+      e.q = todayQ;
+      e.a = a;
+    }else{
+      qa.push({d:todayKey(), label:stamp(), q:todayQ, a:a});
+    }
+    saveList(LS.qa, qa);
+    flash("qSaved");
+    renderQaLog();
+  });
+
+  (function initQa(){
+    document.getElementById("qText").textContent = todayQ;
+    var e = todayAnswer();
+    if(e) document.getElementById("qAns").value = e.a || "";
+    renderQaLog();
+  })();
+
+  /* ---------- 心がざわついた日の道具 ---------- */
+  (function bindTools(){
+    var cards = document.querySelectorAll("#tools .card");
+    for(var i = 0; i < cards.length; i++){
+      (function(card){
+        var head = card.querySelector(".card-head");
+        var body = card.querySelector(".card-body");
+        head.addEventListener("click", function(){
+          if(card.className.indexOf("open") !== -1){
+            card.className = "card";
+            body.style.maxHeight = "0px";
+          }else{
+            card.className = "card open";
+            body.style.maxHeight = body.scrollHeight + "px";
+          }
+        });
+      })(cards[i]);
+    }
+  })();
+
+  /* 解説を開くとカードの中身が伸びるので、高さを測り直す */
+  (function bindWhy(){
+    var ds = document.querySelectorAll(".why");
+    for(var i = 0; i < ds.length; i++){
+      ds[i].addEventListener("toggle", refreshOpen);
+    }
+  })();
+
+  /* エモーショナル・スケーリング */
+  var scale = loadList(LS.scale);
+  var scRange = document.getElementById("scRange");
+
+  function renderScNow(){
+    document.getElementById("scNow").textContent = scRange.value;
+  }
+  scRange.addEventListener("input", renderScNow);
+  scRange.addEventListener("change", renderScNow);
+
+  function renderScLog(){
+    var box = document.getElementById("scLog");
+    box.innerHTML = "";
+    var list = scale.slice().reverse();
+    var lim = Math.min(list.length, 5);
+    for(var i = 0; i < lim; i++){
+      var e = list[i];
+      var t = e.name + " ／ " + e.score + "点";
+      if(e.hold) t += "　支えているもの：" + e.hold;
+      if(e.step) t += "　→ " + e.step;
+      box.appendChild(stackItem(t, e.label));
+    }
+  }
+
+  document.getElementById("scSave").addEventListener("click", function(){
+    var name = val("scName") || "いまの気持ち";
+    scale.push({
+      d:todayKey(), label:stamp(), name:name,
+      score:parseInt(scRange.value, 10), hold:val("scHold"), step:val("scStep")
+    });
+    saveList(LS.scale, scale);
+    document.getElementById("scHold").value = "";
+    document.getElementById("scStep").value = "";
+    flash("scSaved");
+    renderScLog();
+    refreshOpen();
+  });
+
+  /* イフゼン プランニング */
+  var ifthen = loadList(LS.ifthen);
+
+  function renderIfLog(){
+    var box = document.getElementById("ifLog");
+    box.innerHTML = "";
+    var list = ifthen.slice().reverse();
+    for(var i = 0; i < list.length; i++){
+      box.appendChild(stackItem("もし " + list[i].i + " たら、" + list[i].t + " する。", list[i].label));
+    }
+  }
+
+  document.getElementById("ifSave").addEventListener("click", function(){
+    var i = val("ifIf"), t = val("ifThen");
+    if(!i || !t) return;
+    ifthen.push({d:todayKey(), label:stamp(), i:i, t:t});
+    saveList(LS.ifthen, ifthen);
+    document.getElementById("ifIf").value = "";
+    document.getElementById("ifThen").value = "";
+    flash("ifSaved");
+    renderIfLog();
+    refreshOpen();
+  });
+
+  /* ポジション・チェンジ／レファレント・パーソン */
+  var shift = loadList(LS.shift);
+
+  function renderShLog(){
+    var box = document.getElementById("shLog");
+    box.innerHTML = "";
+    var list = shift.slice().reverse();
+    var lim = Math.min(list.length, 6);
+    for(var i = 0; i < lim; i++){
+      box.appendChild(stackItem(list[i].text, list[i].label));
+    }
+  }
+
+  var CLEAR_ON_SAVE = ["pcWho", "pcThink", "pcDo", "rpWho", "rpDo", "tpTalk"];
+
+  document.getElementById("shSave").addEventListener("click", function(){
+    var lines = [];
+    var pcWho = val("pcWho"), pcThink = val("pcThink"), pcDo = val("pcDo");
+    var rpWho = val("rpWho"), rpDo = val("rpDo");
+    var tpName = val("tpName"), tpTalk = val("tpTalk");
+    if(pcWho && (pcThink || pcDo)){
+      lines.push("もし、私が " + pcWho + " の立場だったら、" + pcThink + " と考えて、" + pcDo + " する。");
+    }
+    if(rpWho && rpDo){
+      lines.push("もし、私が " + rpWho + " だったら、" + rpDo + " する。");
+    }
+    if(tpTalk) lines.push(tpTalk);
+    if(lines.length === 0) return;
+    for(var i = 0; i < lines.length; i++){
+      shift.push({d:todayKey(), label:stamp(), text:lines[i]});
+    }
+    saveList(LS.shift, shift);
+    if(tpName) set(LS.name, tpName);   // 名前は次回も使うので覚えておく
+    for(var j = 0; j < CLEAR_ON_SAVE.length; j++){
+      document.getElementById(CLEAR_ON_SAVE[j]).value = "";
+    }
+    flash("shSaved");
+    renderShLog();
+    refreshOpen();
+  });
+
+  (function initName(){
+    var n = get(LS.name, "");
+    if(n) document.getElementById("tpName").value = n;
+  })();
+
+  /* 画面の幅が変わると開いているカードの中身の高さも変わる（回転・キーボード） */
+  window.addEventListener("resize", refreshOpen);
+  window.addEventListener("orientationchange", function(){
+    setTimeout(refreshOpen, 250);
+  });
+
+  /* ---------- 書き出し ---------- */
+  (function bindExport(){
+    var box   = document.getElementById("exBox");
+    var pane  = document.getElementById("exPreview");
+    var note  = document.getElementById("exSaved");
+    var shareBtn = document.getElementById("exShare");
+    var current = {name:"", text:"", mime:"text/plain"};
+
+    function say(msg){
+      note.textContent = msg;
+      note.className = "saved-note show";
+      setTimeout(function(){ note.className = "saved-note"; }, 3200);
+    }
+    function ind(s){ return String(s).replace(/\n/g, "\n　　"); }  // 折り返しの行頭をそろえる
+    function pad2(n){ return n < 10 ? "0" + n : String(n); }
+    function fileDate(){
+      var d = new Date();
+      return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate());
+    }
+    /* 見出しは細い画面で折り返しても崩れない形にしておく */
+    function head(L, title, n, unit){
+      L.push("", "■ " + title + "（" + n + unit + "）", "");
+      if(n === 0) L.push("（まだありません）", "");
+    }
+
+    function buildText(){
+      var L = [];
+      L.push("安心、楽しい、大丈夫。— 自己肯定感ノート");
+      L.push("書き出した日：" + stamp());
+      var streak = parseInt(get(LS.streak, "0"), 10) || 0;
+      if(streak > 0) L.push("今日のことば：これまで " + streak + " 日");
+
+      head(L, "今日のふりかえり", diary.length, "日ぶん");
+      diary.forEach(function(e){
+        L.push(e.label || e.d);
+        if(e.good) L.push("　［いいこと］" + ind(e.good));
+        if(e.why)  L.push("　［なぜなら］" + ind(e.why));
+        if(e.nice) L.push("　［いいところ］" + ind(e.nice));
+        L.push("");
+      });
+
+      head(L, "今日の問いかけ", qa.length, "件");
+      qa.forEach(function(e){
+        L.push(e.label || e.d);
+        L.push("　Q．" + e.q);
+        L.push("　" + ind(e.a));
+        L.push("");
+      });
+
+      head(L, "わたしの言葉", mine.length, "つ");
+      mine.forEach(function(t){ L.push("・" + t); });
+      if(mine.length > 0) L.push("");
+
+      head(L, "エモーショナル・スケーリング", scale.length, "件");
+      scale.forEach(function(e){
+        L.push(e.label || e.d);
+        L.push("　" + e.name + "：１０点中 " + e.score + " 点");
+        if(e.hold) L.push("　１０点ではない理由：" + ind(e.hold));
+        if(e.step) L.push("　１点下げるには：" + ind(e.step));
+        L.push("");
+      });
+
+      head(L, "イフゼンのお守り", ifthen.length, "件");
+      ifthen.forEach(function(e){
+        L.push((e.label || e.d) + "　もし " + e.i + " たら、" + e.t + " する。");
+      });
+      if(ifthen.length > 0) L.push("");
+
+      head(L, "立場の入れかえ", shift.length, "件");
+      shift.forEach(function(e){
+        L.push(e.label || e.d);
+        L.push("　" + ind(e.text));
+        L.push("");
+      });
+
+      L.push("──────────");
+      L.push("『安心、楽しい、大丈夫。』の自己肯定感ノートより");
+      L.push("");
+      return L.join("\n");
+    }
+
+    /* localStorage の中身をそのまま入れる。読み戻すときのための控え */
+    function buildJson(){
+      var data = {};
+      for(var k in LS){
+        if(!LS.hasOwnProperty(k)) continue;
+        var v = get(LS[k], null);
+        if(v !== null) data[LS[k]] = v;
+      }
+      if(data[LS.mine] === undefined) data[LS.mine] = JSON.stringify(mine); // 初期値のままの場合
+      return JSON.stringify({
+        app:"jkk-note", version:1, exportedAt:new Date().toISOString(), data:data
+      }, null, 2);
+    }
+
+    function canShareFile(){
+      try{ return !!(navigator.share && navigator.canShare && window.File); }
+      catch(e){ return false; }
+    }
+
+    function download(){
+      try{
+        var blob = new Blob([current.text], {type:current.mime + ";charset=utf-8"});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = current.name;
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function(){
+          if(a.parentNode) a.parentNode.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 1500);
+        say("ファイルにしました。");
+      }catch(e){
+        say("保存できませんでした。上の文をコピーしてください。");
+      }
+    }
+
+    function shareOrDownload(){
+      if(canShareFile()){
+        try{
+          var f = new File([current.text], current.name, {type:current.mime});
+          if(navigator.canShare({files:[f]})){
+            navigator.share({files:[f], title:"自己肯定感ノート"})
+              .then(function(){}, function(){});   // 取り消しても何もしない
+            return;
+          }
+        }catch(e){}
+      }
+      download();
+    }
+
+    function legacyCopy(){
+      try{
+        box.removeAttribute("readonly");   // iOS は readonly だと選択できない
+        box.focus();
+        box.setSelectionRange(0, box.value.length);
+        var ok = document.execCommand("copy");
+        box.setAttribute("readonly", "readonly");
+        box.blur();
+        window.getSelection().removeAllRanges();
+        say(ok ? "コピーしました。" : "コピーできませんでした。長押しで選んでください。");
+      }catch(e){
+        say("コピーできませんでした。長押しで選んでください。");
+      }
+    }
+    function copyText(){
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(current.text).then(
+            function(){ say("コピーしました。"); },
+            function(){ legacyCopy(); }
+          );
+          return;
+        }
+      }catch(e){}
+      legacyCopy();
+    }
+
+    function show(name, text, mime){
+      current.name = name;
+      current.text = text;
+      current.mime = mime;
+      box.value = text;
+      pane.hidden = false;
+      shareBtn.hidden = !canShareFile();
+      try{ pane.scrollIntoView({block:"nearest"}); }catch(e){}
+    }
+
+    function renderCount(){
+      document.getElementById("exCount").textContent =
+        "いま入っているもの ── ふりかえり " + diary.length + "日ぶん ／ 問いかけ " + qa.length +
+        "件 ／ わたしの言葉 " + mine.length + "つ ／ スケーリング " + scale.length +
+        "件 ／ イフゼン " + ifthen.length + "件 ／ 立場の入れかえ " + shift.length + "件";
+    }
+
+    document.getElementById("exText").addEventListener("click", function(){
+      show("自己肯定感ノート_" + fileDate() + ".txt", buildText(), "text/plain");
+      renderCount();
+    });
+    document.getElementById("exJson").addEventListener("click", function(){
+      show("自己肯定感ノート_控え_" + fileDate() + ".json", buildJson(), "application/json");
+      renderCount();
+    });
+    document.getElementById("exCopy").addEventListener("click", copyText);
+    document.getElementById("exDl").addEventListener("click", download);
+    shareBtn.addEventListener("click", shareOrDownload);
+
+    /* 記録が増えたら件数の表示も追いつかせる（各保存ボタンの処理のあとに走る） */
+    var SAVES = ["dSave", "qSave", "scSave", "ifSave", "shSave", "addBtn"];
+    for(var i = 0; i < SAVES.length; i++){
+      document.getElementById(SAVES[i]).addEventListener("click", renderCount);
+    }
+    document.getElementById("newWord").addEventListener("keydown", function(e){
+      if(e.key === "Enter") renderCount();
+    });
+
+    renderCount();
+  })();
+
+  renderMine();
+  renderToday();
+  paint();
+  renderStreak();
+  renderScNow();
+  renderScLog();
+  renderIfLog();
+  renderShLog();
+})();
+</script>
+</body>
+</html>
