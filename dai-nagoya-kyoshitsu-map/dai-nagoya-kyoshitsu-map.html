@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大ナゴヤ大学 教室マップ</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root{
+    --bg:#f7f7f5; --panel:#fff; --line:#e3e3de; --text:#26251f;
+    --muted:#77756c; --accent:#c2410c; --accent2:#0f766e;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{font-family:-apple-system,"Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;
+       color:var(--text);background:var(--bg);overflow:hidden}
+  header{padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);
+         display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  header h1{font-size:16px;margin:0;font-weight:700}
+  header .sub{font-size:12px;color:var(--muted)}
+  #wrap{display:flex;height:calc(100% - 45px)}
+  #side{width:340px;min-width:340px;background:var(--panel);border-right:1px solid var(--line);
+        display:flex;flex-direction:column}
+  #controls{padding:10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+  #q{width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--line);border-radius:6px;
+     font-family:inherit;background:#fbfbf9}
+  #q:focus{outline:2px solid var(--accent2);outline-offset:-1px}
+  .row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .row label{display:flex;align-items:center;gap:5px;cursor:pointer}
+  #count{margin-left:auto;font-variant-numeric:tabular-nums}
+  #list{flex:1;overflow-y:auto}
+  .item{padding:9px 12px;border-bottom:1px solid #f0f0ec;cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+  .item:hover{background:#fdf7f2}
+  .item.active{background:#fdece1}
+  .badge{flex:0 0 auto;min-width:22px;height:22px;border-radius:11px;background:var(--accent);
+         color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
+         padding:0 6px;margin-top:1px}
+  .badge.one{background:#b8b6ac}
+  .nm{font-size:13px;line-height:1.35}
+  .ad{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.3}
+  #map{flex:1}
+  .leaflet-popup-content{margin:10px 12px;font-size:12.5px;line-height:1.5;max-width:280px}
+  .pop-t{font-weight:700;font-size:13.5px;margin-bottom:4px}
+  .pop-k{color:var(--muted);font-size:11px}
+  .pop-r{margin-top:5px}
+  .pop-links a{display:inline-block;margin:2px 5px 0 0;font-size:11px;color:var(--accent2)}
+  .approx{display:inline-block;font-size:10px;background:#fef3c7;color:#92400e;
+          padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:1px}
+  .marker-lab{background:var(--accent);color:#fff;border-radius:50%;text-align:center;
+              font-size:11px;font-weight:700;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+  .marker-lab.one{background:#8b8880}
+  #note{padding:8px 12px;font-size:11px;color:var(--muted);border-top:1px solid var(--line);line-height:1.5}
+  @media (max-width:800px){
+    #wrap{flex-direction:column}
+    #side{width:100%;min-width:0;height:44%;border-right:none;border-bottom:1px solid var(--line)}
+    #map{height:56%}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>大ナゴヤ大学 教室マップ</h1>
+  <span class="sub">授業詳細ページ108件・教室60箇所（2026-07-29 時点）</span>
+</header>
+<div id="wrap">
+  <div id="side">
+    <div id="controls">
+      <input id="q" type="search" placeholder="教室名・住所で検索（例：名古屋城、岐阜、銭湯）">
+      <div class="row">
+        <label><input type="checkbox" id="onlyMulti"> 使用回数1回の教室を隠す</label>
+        <span id="count"></span>
+      </div>
+    </div>
+    <div id="list"></div>
+    <div id="note">
+      ピン内の数字は、その教室で開催された授業の件数です。<br>
+      <span class="approx">概略</span> は住所が「◯◯界隈」などエリア名のみ、または番地まで特定できなかったため、町名・最寄駅レベルで表示している教室です。
+    </div>
+  </div>
+  <div id="map"></div>
+</div>
+
+<script>
+const VENUES = [
+ {n:"名古屋城本丸御殿　孔雀之間",lat:35.184982,lon:136.899698,
+  ad:"〒460-0031 愛知県名古屋市中区本丸1-1（教室は和室）",ac:"",pk:"",
+  gm:"https://www.nagoyajo.city.nagoya.jp/access/",ap:0,
+  ids:[779,778,763,756,755,743,739,738,726,720,711,707,689,686,679,678,670]},
+ {n:"大ナゴヤ大学・事務所",lat:35.16028,lon:136.90356,
+  ad:"愛知県名古屋市中区大須3-42-30 ＡＬＡ大須ビル201号室",ac:"地下鉄上前津駅 8番出口 徒歩3分程",pk:"",
+  gm:"https://goo.gl/maps/tisCkpEiJ8C2",ap:1,
+  ids:[767,765,745,744,737,736,733,724,723,712,692,688,681]},
+ {n:"名鉄本笠寺駅周辺",lat:35.099171,lon:136.933378,
+  ad:"名古屋市南区笠寺町周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/x4TnkKGiVVdoUUf27",ap:1,ids:[769,729,690]},
+ {n:"医王山 神宮寺",lat:35.145095,lon:136.923758,
+  ad:"愛知県名古屋市昭和区御器所4-4-22",ac:"地下鉄鶴舞線「荒畑」駅4番出口より徒歩8分",
+  pk:"お寺の駐車場は参拝者優先。近隣のコインパーキングを利用",
+  gm:"https://www.google.com/maps/search/?api=1&query=%E5%8C%BB%E7%8E%8B%E5%B1%B1+%E7%A5%9E%E5%AE%AE%E5%AF%BA",ap:0,ids:[754,753,718]},
+ {n:"ROOTS BOOKS（東海国立大学機構 Common Nexus内）",lat:35.153309,lon:136.967781,
+  ad:"愛知県名古屋市千種区不老町",ac:"地下鉄名城線「名古屋大学」駅／1番出口へ向かう途中にComoNe直結入口",pk:"",
+  gm:"https://maps.app.goo.gl/a9MbcGUxY2Lj8Gas9",ap:1,ids:[742,741,740]},
+ {n:"ポピー談話室",lat:35.172443,lon:136.89008,
+  ad:"名古屋市中区錦1-14-12 3階",ac:"地下鉄桜通線 国際センター駅4番出口 徒歩約5分／伏見駅10番出口 徒歩約7分",pk:"",
+  gm:"https://maps.app.goo.gl/WbPBL6MA9pDLwDNZA",ap:1,ids:[709,683,682]},
+ {n:"尾張瀬戸界隈",lat:35.22517,lon:137.097318,
+  ad:"愛知県瀬戸市末広町1 周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/ZPGWDqNHL92twghC9",ap:1,ids:[770,699]},
+ {n:"港まち界隈",lat:35.100001,lon:136.883164,
+  ad:"〒455-0037 名古屋市港区名港1-19-23",ac:"",pk:"",
+  gm:"https://goo.gl/maps/ANgEukwNe4EYuEy27",ap:1,ids:[768,734]},
+ {n:"港まちづくり協議会 港まちポットラックビル",lat:35.100001,lon:136.883164,
+  ad:"〒455-0037 愛知県名古屋市港区名港1-19-23",ac:"地下鉄名港線「築地口」駅2番出口より徒歩1分",pk:"",
+  gm:"https://goo.gl/maps/ydgHdmerq432",ap:1,ids:[762,727]},
+ {n:"オンライン開催",lat:35.16028,lon:136.90356,
+  ad:"（Zoomによるオンライン授業。地図上は大ナゴヤ大学・事務所の位置に表示）",ac:"",pk:"",
+  gm:"https://zoom.us/",ap:1,ids:[764,725]},
+ {n:"青木記念ホール",lat:35.16537,lon:136.857795,
+  ad:"〒453-0831 愛知県名古屋市中村区中村中町3-30",
+  ac:"地下鉄東山線「中村公園駅」5番出口・バスターミナルより徒歩8分",pk:"住宅地のため付近の有料駐車場を利用",
+  gm:"https://maps.app.goo.gl/VLgstdmWMfsTEctU8",ap:1,ids:[760,750]},
+ {n:"円頓寺商店街界隈",lat:35.176256,lon:136.89126,
+  ad:"名古屋市西区那古野一丁目",ac:"",pk:"",
+  gm:"https://goo.gl/maps/k9QUaeoQ7itnfHPf6",ap:0,ids:[735,705]},
+ {n:"有松界隈",lat:35.067315,lon:136.971644,
+  ad:"（記載なし・名古屋市緑区有松）",ac:"",pk:"",
+  gm:"https://goo.gl/maps/PsTQJuZjr7XTCfSk9",ap:1,ids:[732,698]},
+ {n:"東岡崎界隈",lat:34.959138,lon:137.167708,
+  ad:"愛知県岡崎市籠田町21",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/3aUM86xxDZBJX8qMA",ap:1,ids:[717,677]},
+ {n:"まちのお茶の間 菅原商店",lat:35.106472,lon:136.934597,
+  ad:"当日は名鉄名古屋本線「桜駅」改札外に集合",ac:"地下鉄桜通線「桜本町駅」から名鉄「桜駅」まで徒歩5分ほど",pk:"",
+  gm:"https://maps.app.goo.gl/Fhf7hkTCTBKt94tL6",ap:1,ids:[716,691]},
+ {n:"soiro 3階イベントスペース",lat:35.172778,lon:136.862267,
+  ad:"名古屋市中村区羽衣町30-4",
+  ac:"地下鉄東山線「中村日赤」「本陣」駅より徒歩9分／桜通線「太閤通」駅より徒歩10分",pk:"",
+  gm:"https://goo.gl/maps/tLV43fCUqXpUNZjv6",ap:1,ids:[701,700]},
+ {n:"スペース七番　スペース 2",lat:35.169223,lon:136.897043,
+  ad:"愛知県名古屋市中区錦2-7-7 オリマチ錦 2-A",
+  ac:"地下鉄「伏見」駅1番出口より徒歩5分／「丸の内」駅5・6番出口より徒歩5分",pk:"",
+  gm:"https://goo.gl/maps/QK15rojBRdBf7W2P7",ap:1,ids:[685,684]},
+ {n:"ホリエビル 本館2F「Gallery NA2」",lat:35.169057,lon:136.880189,
+  ad:"名古屋市中村区椿町12-12",ac:"地下鉄・JR・名鉄「名古屋」駅 太閤通口より徒歩4分",pk:"",
+  gm:"https://goo.gl/maps/vaCGDJ8ReEx1Z8FM8",ap:1,ids:[673,672]},
+ {n:"久屋大通庭園フラリエ内　北ウイング　シェアルーム A-1",lat:35.160919,lon:136.908675,
+  ad:"名古屋市中区大須4-4-1",
+  ac:"名城線「矢場町」駅4番出口から南へ徒歩3分／名城線・鶴舞線「上前津」駅1番出口から北へ徒歩5分",
+  pk:"有（有料）",gm:"https://maps.app.goo.gl/652nwueRjWmjQBS79",ap:0,ids:[776]},
+ {n:"フトン丸洗い館 徳重駅前店",lat:35.094778,lon:136.997747,
+  ad:"〒458-0804 愛知県名古屋市緑区亀が洞1-102",ac:"地下鉄桜通線「徳重駅」徒歩8分",
+  pk:"駐車場あり（コインランドリー利用の方優先）",
+  gm:"https://maps.app.goo.gl/j7zyxqKJbofszWQHA",ap:1,ids:[775]},
+ {n:"名古屋市演劇練習館（アクテノン）",lat:35.166426,lon:136.845426,
+  ad:"名古屋市中村区稲葉地町1-47",
+  ac:"地下鉄東山線「中村公園」2番出口より徒歩12分／名鉄バス「稲葉地公園」より徒歩2分",
+  pk:"学生用の駐車場なし",gm:"https://maps.app.goo.gl/q7dKjbYms3Xi1dm96",ap:0,ids:[774]},
+ {n:"柳原通商店街",lat:35.19176,lon:136.909045,
+  ad:"名古屋市北区柳原周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/JSAD6PJy3LRep7jA7",ap:1,ids:[773]},
+ {n:"蒲郡駅周辺",lat:34.822812,lon:137.225777,
+  ad:"〒443-0043 愛知県蒲郡市元町",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/hFwuwYkUTuPcJuKRA",ap:1,ids:[772]},
+ {n:"名古屋市動物愛護センター",lat:35.175015,lon:136.973568,
+  ad:"〒464-0022 名古屋市千種区平和公園2-106",
+  ac:"地下鉄名城線 自由ヶ丘駅2番出口から徒歩15分／星ヶ丘駅から市バス「平和公園南」下車徒歩15分",
+  pk:"あり",gm:"https://maps.app.goo.gl/bg3XNHJq8FDwjd4f9",ap:0,ids:[771]},
+ {n:"桑名・益生エリア",lat:35.058096,lon:136.678661,
+  ad:"桑名市益生町周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/Fz9RJbzMK32Tmacx6",ap:1,ids:[766]},
+ {n:"まゆっこセンター",lat:35.202159,lon:137.553376,
+  ad:"愛知県豊田市稲武町タヒラ8",
+  ac:"「豊田市駅」より稲武地域バス「どんぐりバス」乗車、「どんぐりの湯前」下車 徒歩10分",
+  pk:"近隣の「古橋懐古館」駐車場を利用",gm:"https://maps.app.goo.gl/cX3AEybMkATGizYt5",ap:1,ids:[761]},
+ {n:"クリばこ",lat:35.165049,lon:136.888337,
+  ad:"名古屋市中村区名駅南2-11-42",ac:"JR・名鉄・地下鉄各線 名古屋駅から徒歩10分程度",
+  pk:"公共交通機関での来場を推奨",gm:"https://maps.app.goo.gl/A12kqdeMQrtAHov87",ap:1,ids:[759]},
+ {n:"かさでら図書館（かさでらのまち箱内）",lat:35.099292,lon:136.936481,
+  ad:"名古屋市南区笠寺町西之門12",
+  ac:"名鉄「本笠寺」駅より徒歩3分／市バス「笠寺西門」より徒歩1分",
+  pk:"なし",gm:"https://maps.app.goo.gl/okSzdLGAvC85rozy6",ap:0,ids:[758]},
+ {n:"名古屋城周辺",lat:35.185319,lon:136.899177,
+  ad:"愛知県名古屋市中区本丸1-1 周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/4Hz3SsPSEzeim6x66",ap:0,ids:[757]},
+ {n:"多治見駅周辺",lat:35.335375,lon:137.120846,
+  ad:"岐阜県多治見市音羽町2丁目周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/RruhKkUzthAL6GhD6",ap:1,ids:[752]},
+ {n:"内田橋商店街周辺",lat:35.113627,lon:136.906974,
+  ad:"名古屋市南区内田橋1丁目周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/Htsy6oKSCeNbe7rq7",ap:1,ids:[751]},
+ {n:"半田・運河エリア",lat:34.894031,lon:136.933534,
+  ad:"愛知県半田市中村町周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/mCj412AyXnfmJAX4A",ap:0,ids:[749]},
+ {n:"西山エリア",lat:35.156962,lon:136.994197,
+  ad:"名古屋市名東区西山本通周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/C7mdx1rTZr2bZWCYA",ap:1,ids:[748]},
+ {n:"豊橋のまちなか・水上ビル周辺",lat:34.76357,lon:137.382108,
+  ad:"豊橋市駅前大通周辺",ac:"豊橋駅から徒歩5分ほど",pk:"",
+  gm:"https://maps.app.goo.gl/YPNYY2XPCNVKRHHH7",ap:1,ids:[747]},
+ {n:"刈谷市駅周辺",lat:34.984704,lon:136.993775,
+  ad:"刈谷市広小路町周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/aqSYEdS1nXjiXxbU6",ap:1,ids:[746]},
+ {n:"各務原・那加公園エリア",lat:35.40057,lon:136.835328,
+  ad:"岐阜県各務原市那加本町周辺",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/iGok8LuAG9JcTNXw6",ap:1,ids:[731]},
+ {n:"中川運河ギャラリー",lat:35.155732,lon:136.889769,
+  ad:"名古屋市中川区西日置2-12-15",
+  ac:"名鉄「山王駅」より徒歩5分／JR「尾頭橋駅」より徒歩15分／市バス「日置橋」より徒歩3分",pk:"",
+  gm:"https://maps.app.goo.gl/h5Szs5WQoT43xSTo7",ap:1,ids:[730]},
+ {n:"八千代湯",lat:35.193489,lon:136.898072,
+  ad:"愛知県名古屋市西区上名古屋1-12-5",
+  ac:"地下鉄「名城公園」駅・「浄心」駅から徒歩約13分／市バス「弁天通3丁目」から徒歩約5分",
+  pk:"有",gm:"https://g.co/kgs/m4euwip",ap:1,ids:[728]},
+ {n:"スペース七番 スペース1（キッチン）",lat:35.169223,lon:136.897043,
+  ad:"愛知県名古屋市中区錦2-7-7 オリマチ錦 2-A",
+  ac:"地下鉄「伏見」駅1番出口より徒歩5分／「丸の内」駅5・6番出口より徒歩5分",pk:"",
+  gm:"https://goo.gl/maps/xNBJ141Ggusrxs1t7",ap:1,ids:[722]},
+ {n:"名古屋能楽堂 会議室",lat:35.182505,lon:136.896349,
+  ad:"〒460-0001 愛知県名古屋市中区三の丸1-1-1",ac:"",pk:"",
+  gm:"https://www.bunka758.or.jp/facility/nougakudo/#ttl03",ap:0,ids:[721]},
+ {n:"kabo.",lat:35.089853,lon:137.159956,
+  ad:"〒471-0077 愛知県豊田市竹生町2-4-22",
+  ac:"愛知環状鉄道「新豊田駅」から徒歩約12分／名鉄「豊田市駅」から徒歩約8分",
+  pk:"専用駐車場なし。近隣の有料パーキング（市営 昭和町駐車場など）を利用",
+  gm:"https://www.google.com/maps/search/?api=1&query=kabo.+%E8%B1%8A%E7%94%B0%E5%B8%82",ap:0,ids:[719]},
+ {n:"レンタルスタジオBlanco",lat:35.192379,lon:136.950741,
+  ad:"名古屋市東区大幸3-15-18",
+  ac:"地下鉄名城線 砂田橋駅 徒歩4分／ナゴヤドーム前矢田駅 徒歩7分／名鉄瀬戸線 矢田駅 徒歩8分",pk:"",
+  gm:"https://maps.app.goo.gl/5Y3oNoXX6uueC2YXA",ap:1,ids:[714]},
+ {n:"音楽練習スタジオENJO",lat:35.142222,lon:136.919891,
+  ad:"名古屋市昭和区円上町15-18 2F",ac:"バス停「高辻」すぐ／バス停「高辻北」下車",
+  pk:"無。近くの駐車場を利用",gm:"https://qr.paps.jp/0HoPc",ap:1,ids:[715]},
+ {n:"ジユウノハコ",lat:35.165633,lon:136.879315,
+  ad:"〒453-0801 愛知県名古屋市中村区太閤3-7-76",ac:"名古屋駅より徒歩6分程",pk:"",
+  gm:"https://maps.app.goo.gl/Mb9xRiw9uzzTbRZu5",ap:1,ids:[713]},
+ {n:"橋の下世界音楽祭",lat:35.082671,lon:137.167554,
+  ad:"豊田大橋の下 千石公園",ac:"豊田駅から徒歩15〜20分",
+  pk:"公共交通機関の利用推奨。車の場合は豊田市内近隣パーキングへ",
+  gm:"https://maps.app.goo.gl/MrDXUnwEzSi1V1SW8",ap:0,ids:[710]},
+ {n:"Fukumochi vintage",lat:35.05734,lon:136.683099,
+  ad:"〒511-0056 三重県桑名市西矢田町35",ac:"近鉄「益生」駅より徒歩11分",
+  pk:"なし。近くのコインパーキングを利用",gm:"https://maps.app.goo.gl/nBou1snZ9NsQyQZw5",ap:1,ids:[708]},
+ {n:"岐阜市柳ヶ瀬通",lat:35.419203,lon:136.760406,
+  ad:"岐阜県岐阜市柳ヶ瀬通",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/nBcdpKPey7a9x4xF9",ap:1,ids:[706]},
+ {n:"VISON（ヴィソン）",lat:34.458827,lon:136.514085,
+  ad:"三重県多気郡多気町ヴィソン672-1",
+  ac:"名鉄バスセンターから直通の高速バスあり（名古屋8:10発→VISON 9:50着）",pk:"有",
+  gm:"https://maps.app.goo.gl/8LGeum4nMLk4jXFg7",ap:0,ids:[704]},
+ {n:"なごのや別館ラウンジ",lat:35.172443,lon:136.89008,
+  ad:"名古屋市西区那古野1-35-13",
+  ac:"地下鉄桜通線「国際センター」駅2番出口より北東へ徒歩5分",pk:"",
+  gm:"https://goo.gl/maps/T2YhBaegjL4qphcU8",ap:1,ids:[703]},
+ {n:"長者町界隈",lat:35.169223,lon:136.897043,
+  ad:"名古屋市中区錦2丁目",ac:"",pk:"",
+  gm:"https://goo.gl/maps/be1UVxS42E41mvzH6",ap:1,ids:[702]},
+ {n:"私設図書館もん",lat:35.191337,lon:137.005295,
+  ad:"名古屋市名東区延珠町211-1号室",
+  ac:"地下鉄一社駅より市バス引山行き「延珠橋」下車すぐ／「引山」「引山東」下車",
+  pk:"無。近くにコインパーキングあり",
+  gm:"https://www.google.com/maps/search/?api=1&query=%E7%A7%81%E8%A8%AD%E5%9B%B3%E6%9B%B8%E9%A4%A8+%E3%82%82%E3%82%93",ap:1,ids:[697]},
+ {n:"大島ひでひろ事務所",lat:35.180122,lon:137.017549,
+  ad:"名古屋市名東区小池町60 三和マンション1階",ac:"藤が丘駅から歩いてすぐ",pk:"",
+  gm:"https://maps.app.goo.gl/5uJCtUQKrNj5enTW8",ap:1,ids:[696]},
+ {n:"Camping Office osoto Hisayaodori",lat:35.167366,lon:136.908828,
+  ad:"愛知県名古屋市中区錦3-5-15先 RAYARD Hisaya-odori Park スノーピーク久屋大通公園 店舗2階",
+  ac:"地下鉄 桜通線・名城線「久屋大通駅」6A出口から徒歩約1分",
+  pk:"専用駐車場なし。セントラルパーク駐車場等を利用",
+  gm:"https://maps.app.goo.gl/QEfSGbZRKxKfxga67",ap:0,ids:[695]},
+ {n:"金原酒店",lat:34.887101,lon:136.989641,
+  ad:"愛知県碧南市中山町6-7",ac:"集合場所は名鉄三河線「碧南中央」駅（「碧南」駅ではない）",pk:"",
+  gm:"https://maps.app.goo.gl/R4zJq63kR53EuMnZ7",ap:1,ids:[694]},
+ {n:"藤が丘界隈",lat:35.182291,lon:137.021265,
+  ad:"愛知県名古屋市名東区藤が丘",ac:"",pk:"",
+  gm:"https://maps.app.goo.gl/Y9s3SVe7rF7hQQ1y9",ap:1,ids:[693]},
+ {n:"白山温泉",lat:35.189631,lon:136.872305,
+  ad:"名古屋市西区枇杷島1-2-20",
+  ac:"名鉄「東枇杷島」駅から徒歩2分程度／「栄生」駅から徒歩6分程度",pk:"有",
+  gm:"https://maps.app.goo.gl/jaMVMqfRN2QC7Pas6",ap:1,ids:[687]},
+ {n:"本屋メガホン",lat:35.419625,lon:136.759497,
+  ad:"〒500-8832 岐阜県岐阜市小柳町18-6 デイリーコヤナギ1F",
+  ac:"JR岐阜駅・名鉄岐阜駅より徒歩約15分",pk:"無し",
+  gm:"https://goo.gl/maps/Fh3oZJGwdaZ9G4Y98",ap:1,ids:[680]},
+ {n:"文化のみち橦木館",lat:35.18054,lon:136.914162,
+  ad:"名古屋市東区橦木町2-18",
+  ac:"地下鉄桜通線「高岳」1番出口より徒歩10分／名鉄瀬戸線「尼ヶ坂」より徒歩12分",pk:"無",
+  gm:"https://shumokukan.jp/access/index.html",ap:1,ids:[676]},
+ {n:"清水〜尼ケ坂エリア",lat:35.187935,lon:136.91919,
+  ad:"名古屋市北区大杉・清水周辺",ac:"名鉄瀬戸線「清水」駅は「栄町」駅から4分",pk:"",
+  gm:"",ap:1,ids:[675]},
+ {n:"星が丘テラス界隈",lat:35.162631,lon:136.985554,
+  ad:"名古屋市千種区星が丘元町16-50",ac:"地下鉄東山線「星ヶ丘」駅6番出口より徒歩1分",pk:"",
+  gm:"https://goo.gl/maps/LBv63Ay9sp4Z59J69",ap:1,ids:[674]}
+];
+
+/* ---------- 重なるピンを微妙にずらす ---------- */
+(function(){
+  const seen = {};
+  VENUES.forEach(v=>{
+    const k = v.lat.toFixed(5)+','+v.lon.toFixed(5);
+    if(seen[k]!==undefined){
+      const i = ++seen[k];
+      const ang = i * 2.399963;            // 黄金角
+      const r = 0.00095 + i*0.00035;
+      v.lat += r*Math.cos(ang);
+      v.lon += r*Math.sin(ang)*1.22;
+      v.jit = true;
+    } else { seen[k]=0; }
+  });
+})();
+
+const map = L.map('map',{zoomControl:true}).setView([35.17,136.92],11);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  maxZoom:19, attribution:'&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function popupHtml(v){
+  const c = v.ids.length;
+  let h = '<div class="pop-t">'+esc(v.n)+(v.ap?'<span class="approx">概略</span>':'')+'</div>';
+  h += '<div class="pop-k">開催実績 '+c+'件</div>';
+  if(v.ad) h += '<div class="pop-r"><span class="pop-k">住所</span><br>'+esc(v.ad)+'</div>';
+  if(v.ac) h += '<div class="pop-r"><span class="pop-k">アクセス</span><br>'+esc(v.ac)+'</div>';
+  if(v.pk) h += '<div class="pop-r"><span class="pop-k">駐車場</span><br>'+esc(v.pk)+'</div>';
+  h += '<div class="pop-r pop-links"><span class="pop-k">授業ページ</span><br>'+
+       v.ids.map(id=>'<a href="https://dai-nagoya.univnet.jp/subjects/detail/'+id+'" target="_blank" rel="noopener">#'+id+'</a>').join('')+'</div>';
+  h += '<div class="pop-r pop-links">'+
+       (v.gm?'<a href="'+esc(v.gm)+'" target="_blank" rel="noopener">サイト掲載の地図 ↗</a>':'')+
+       '<a href="https://www.google.com/maps/search/?api=1&query='+v.lat+','+v.lon+'" target="_blank" rel="noopener">Googleマップで開く ↗</a></div>';
+  return h;
+}
+
+VENUES.forEach((v,i)=>{
+  const c = v.ids.length;
+  const size = Math.min(46, 24 + c*1.3);
+  v.marker = L.marker([v.lat,v.lon],{
+    icon: L.divIcon({
+      className:'',
+      html:'<div class="marker-lab'+(c===1?' one':'')+'" style="width:'+size+'px;height:'+size+'px;line-height:'+(size-4)+'px">'+c+'</div>',
+      iconSize:[size,size], iconAnchor:[size/2,size/2], popupAnchor:[0,-size/2]
+    })
+  }).bindPopup(popupHtml(v),{maxWidth:300});
+  v.marker.on('click',()=>select(i,false));
+  v.idx = i;
+});
+
+const layer = L.layerGroup(VENUES.map(v=>v.marker)).addTo(map);
+
+/* ---------- サイドリスト ---------- */
+const listEl = document.getElementById('list');
+const qEl = document.getElementById('q');
+const multiEl = document.getElementById('onlyMulti');
+const countEl = document.getElementById('count');
+let current = -1;
+
+const order = VENUES.map((v,i)=>i).sort((a,b)=>
+  VENUES[b].ids.length - VENUES[a].ids.length || VENUES[a].n.localeCompare(VENUES[b].n,'ja'));
+
+function render(){
+  const q = qEl.value.trim().toLowerCase();
+  const onlyMulti = multiEl.checked;
+  let shown = 0;
+  listEl.innerHTML = '';
+  layer.clearLayers();
+  const bounds = [];
+  order.forEach(i=>{
+    const v = VENUES[i], c = v.ids.length;
+    const hay = (v.n+' '+v.ad+' '+v.ac).toLowerCase();
+    if(q && hay.indexOf(q) === -1) return;
+    if(onlyMulti && c === 1) return;
+    shown++;
+    layer.addLayer(v.marker);
+    bounds.push([v.lat,v.lon]);
+    const d = document.createElement('div');
+    d.className = 'item' + (i===current?' active':'');
+    d.innerHTML = '<div class="badge'+(c===1?' one':'')+'">'+c+'</div>'+
+      '<div><div class="nm">'+esc(v.n)+(v.ap?'<span class="approx">概略</span>':'')+'</div>'+
+      '<div class="ad">'+esc(v.ad || '（住所の記載なし）')+'</div></div>';
+    d.onclick = ()=>select(i,true);
+    listEl.appendChild(d);
+  });
+  countEl.textContent = shown + ' / ' + VENUES.length + ' 箇所';
+  if(q && bounds.length){ map.fitBounds(bounds,{padding:[40,40],maxZoom:15}); }
+}
+
+function select(i, fly){
+  current = i;
+  const v = VENUES[i];
+  if(fly) map.flyTo([v.lat,v.lon], Math.max(map.getZoom(),15), {duration:.6});
+  v.marker.openPopup();
+  [...listEl.children].forEach(el=>el.classList.remove('active'));
+  const idx = order.filter(j=>{
+    const w = VENUES[j];
+    const q = qEl.value.trim().toLowerCase();
+    if(q && (w.n+' '+w.ad+' '+w.ac).toLowerCase().indexOf(q)===-1) return false;
+    if(multiEl.checked && w.ids.length===1) return false;
+    return true;
+  }).indexOf(i);
+  if(idx>=0 && listEl.children[idx]){
+    listEl.children[idx].classList.add('active');
+    listEl.children[idx].scrollIntoView({block:'nearest'});
+  }
+}
+
+qEl.addEventListener('input', render);
+multiEl.addEventListener('change', render);
+render();
+map.fitBounds(VENUES.map(v=>[v.lat,v.lon]),{padding:[40,40]});
+</script>
+</body>
+</html>
